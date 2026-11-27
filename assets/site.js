@@ -82,22 +82,30 @@
     return dialog;
   }
 
+  // Buy buttons: one Stripe Payment Link for the unframed print (w.buy), and a
+  // second for framed (w.buyFramed, pickup in Brooklyn) when the work is offered framed.
+  function buyButtons(w, sold, soldNote) {
+    if (sold) return '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">' + esc(soldNote) + '</span>';
+    var out = w.buy
+      ? '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>'
+      : '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span>';
+    if (w.framed) {
+      out += w.buyFramed
+        ? '<a class="btn btn-line" href="' + esc(w.buyFramed) + '" rel="noopener">Buy framed · ' + esc(w.framed) + '</a>'
+        : '<span class="btn btn-line" aria-disabled="true">Buy framed · ' + esc(w.framed) + '</span>';
+    }
+    var note = (w.buy || w.buyFramed)
+      ? 'Secure checkout with Stripe.' + (w.framed ? ' Framed prints are pickup in Brooklyn.' : '')
+      : '[Checkout link coming soon]';
+    return out + '<span class="mono mute">' + note + '</span>';
+  }
+
   function openQuick(idx) {
     var w = WORKS[idx];
     if (!w) return;
     var d = ensureDialog();
     var sold = isSold(w);
-    var buy;
-    if (sold) {
-      buy = '<span class="btn" aria-disabled="true">Sold out</span>' +
-            '<span class="mono mute">Stays in the catalogue as part of the record.</span>';
-    } else if (w.buy) {
-      buy = '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>' +
-            '<span class="mono mute">Secure checkout with Stripe. Choose quantity on the next page.</span>';
-    } else {
-      buy = '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span>' +
-            '<span class="mono mute">[Checkout link coming soon]</span>';
-    }
+    var buy = buyButtons(w, sold, 'Stays in the catalogue as part of the record.');
     var size = esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '');
     d.innerHTML =
       '<div class="ql">' +
@@ -295,10 +303,7 @@
     var siblings = WORKS.map(function (x, j) { return j; }).filter(function (j) { return j !== idx && WORKS[j].title === w.title && WORKS[j].colorway; });
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
 
-    var buy;
-    if (sold) buy = '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">This edition is gone. It stays here as part of the record.</span>';
-    else if (w.buy) buy = '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>';
-    else buy = '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span><span class="mono mute">[Checkout link coming soon]</span>';
+    var buy = buyButtons(w, sold, 'This edition is gone. It stays here as part of the record.');
 
     var inkList = w.inks.length ? w.inks.map(function (n) {
       return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
