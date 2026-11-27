@@ -4,6 +4,11 @@
   'use strict';
 
   var WORKS = window.BPC_WORKS || [];
+  // Versions of one image (same title) are told apart by their inks, e.g. "Kelly Green and Teal".
+  WORKS.forEach(function (w) {
+    var same = WORKS.filter(function (x) { return x.title === w.title; }).length > 1;
+    if (!w.colorway && same && w.inks.length) w.colorway = w.inks.join(' and ');
+  });
   var INKS = window.BPC_INKS || {};
 
   function esc(s) {

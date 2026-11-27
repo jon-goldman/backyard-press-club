@@ -6,7 +6,6 @@
     no        catalogue number, in order (BPC–001, BPC–002 ...)
     title     name of the piece
     type      "Print", "Zine", "Poster" or "Book"
-    colorway  optional, tells apart versions of one image, e.g. "Kelly Green and Teal"
     inks      ink names from INKS below, in print order
     size      e.g. "A3 · 297 × 420 mm"
     pages     zines and books only, e.g. "24 pages"
@@ -53,11 +52,11 @@ window.BPC_WORKS = [
   { no: 'BPC–001', title: 'Green Water', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '25', paper: '[Paper stock]', year: '2026', price: '$45', framed: '$120', status: 'available',
     image: 'images/green-water.jpg', photo: 'images/photos/green-water.jpg', detail: 'images/green-water-detail.jpg', buy: '',
     about: '[Two lines about Green Water.] Signed and numbered in pencil by both artists.' },
-  { no: 'BPC–002', title: 'Untitled (Tree Composition)', type: 'Print', colorway: 'Sunflower and Bright Red', inks: ['Sunflower', 'Bright Red'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+  { no: 'BPC–002', title: 'Untitled (Tree Composition)', type: 'Print', inks: ['Sunflower', 'Bright Red'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
     image: 'images/tree-sunflower-red.jpg', photo: 'images/photos/tree-sunflower-red.jpg', layers: ['images/layers/tree-sunflower-red-1.webp', 'images/layers/tree-sunflower-red-2.webp'], detail: 'images/tree-sunflower-red-detail.jpg', buy: '', about: TREE_ABOUT },
-  { no: 'BPC–003', title: 'Untitled (Tree Composition)', type: 'Print', colorway: 'Purple and Fluorescent Pink', inks: ['Purple', 'Fluorescent Pink'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+  { no: 'BPC–003', title: 'Untitled (Tree Composition)', type: 'Print', inks: ['Purple', 'Fluorescent Pink'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
     image: 'images/tree-purple-pink.jpg', photo: 'images/photos/tree-purple-pink.jpg', layers: ['images/layers/tree-purple-pink-1.webp', 'images/layers/tree-purple-pink-2.webp'], detail: 'images/tree-purple-pink-detail.jpg', buy: '', about: TREE_ABOUT },
-  { no: 'BPC–004', title: 'Untitled (Tree Composition)', type: 'Print', colorway: 'Kelly Green and Teal', inks: ['Kelly Green', 'Teal'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+  { no: 'BPC–004', title: 'Untitled (Tree Composition)', type: 'Print', inks: ['Kelly Green', 'Teal'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
     image: 'images/tree-green-teal.jpg', photo: 'images/photos/tree-green-teal.jpg', layers: ['images/layers/tree-green-teal-1.webp', 'images/layers/tree-green-teal-2.webp'], detail: 'images/tree-green-teal-detail.jpg', buy: '', about: TREE_ABOUT },
   { no: 'BPC–005', title: 'Matador', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '25', paper: '[Paper stock]', year: '2026', price: '[PRICE]', framed: '', status: 'available',
     image: 'images/matador.jpg', photo: 'images/photos/matador.jpg', detail: 'images/matador-detail.jpg', buy: '',
