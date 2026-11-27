@@ -35,7 +35,8 @@ window.BPC_INKS = {
   'Bright Red':       '#f15060',
   'Kelly Green':      '#67b346',
   'Purple':           '#765ba7',
-  'Fluorescent Pink': '#ff48b0'
+  'Fluorescent Pink': '#ff48b0',
+  'Scarlet':          '#f65058'
 };
 
 /* Inks shown in the picker on the Riso printing page. */
@@ -71,8 +72,8 @@ window.BPC_WORKS = [
     image: 'images/rainbowburn.jpg', detail: '', buy: '', about: '[Two lines about Rainbowburn.]' },
   { no: 'BPC–010', title: 'Flowers Up', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: 'Speckletone', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
     image: 'images/flowers-up.jpg', detail: '', buy: '', about: '[Two lines about Flowers Up.]' },
-  { no: 'BPC–011', title: 'Foliage', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
-    image: 'images/foliage.jpg', detail: '', buy: '', about: '[Two lines about Foliage.]' },
+  { no: 'BPC–011', title: 'Foliage', type: 'Print', inks: ['Scarlet', 'Purple'], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: '', about: '[Two lines about Foliage.]' },
   { no: 'BPC–012', title: 'Flowers 4', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: 'Speckletone', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
     image: 'images/flowers-4.jpg', detail: '', buy: '', about: '[Two lines about Flowers 4.]' },
   { no: 'BPC–013', title: 'Dark Water', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: 'Speckletone', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
