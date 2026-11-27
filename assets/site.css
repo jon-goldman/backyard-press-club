@@ -245,3 +245,75 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .site-footer nav a { color: var(--blue); font-family: var(--mono); font-size: 12px; min-height: 32px; display: inline-flex; align-items: center; }
 
 .empty { padding: 48px 0; color: var(--mute); }
+
+/* Shop: board C, Nov 2026 (Jon: "left side is static and the right side you can
+   scroll down to see the different prints"). A fixed text column with the index,
+   and big prints stacked on the right. */
+.shop-split { display: flex; align-items: flex-start; min-height: 100vh; }
+.split-side {
+  position: sticky; top: env(safe-area-inset-top, 0px);
+  flex: 0 0 min(420px, 34%); height: 100vh; overflow-y: auto;
+  padding-block: 28px 32px; padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: 32px;
+  display: flex; flex-direction: column; gap: 28px;
+}
+.side-top { display: flex; align-items: center; min-height: 44px; }
+.wordmark { font-size: 20px; line-height: 1; }
+.lede { margin: 0; max-width: 440px; font-size: 20px; line-height: 1.3; font-weight: 500; color: var(--blue); text-wrap: pretty; }
+.lede a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.side-nav { display: flex; flex-wrap: wrap; gap: 0 20px; font-size: 15px; font-weight: 600; }
+.side-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--blue); }
+.side-nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.side-nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+.index { display: flex; flex-direction: column; }
+.index-row {
+  display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; gap: 12px; align-items: baseline;
+  width: 100%; padding: 10px 0; border: 0; border-bottom: 1px solid rgba(17,17,17,.15);
+  background: none; text-align: left; cursor: pointer; font-size: 15px;
+}
+.index-row.head { cursor: default; color: var(--mute); border-bottom-color: var(--ink); padding: 8px 0; }
+.index-row .no { font-family: var(--mono); font-size: 12px; color: var(--mute); }
+.index-row .t { color: var(--blue); font-weight: 500; min-width: 0; }
+.index-row .t span { font-weight: 400; }
+.index-row .p { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.index-row:hover .t { text-decoration: underline; text-underline-offset: 3px; }
+.index-row.is-current .t { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.index-row.is-current .no { color: var(--ink); }
+.index-row.is-sold .t, .index-row.is-sold .p { color: var(--mute); }
+.side-foot { margin: auto 0 0; line-height: 1.8; }
+.side-foot a { color: var(--blue); }
+
+.split-main { flex: 1 1 auto; min-width: 0; padding: 12px; padding-right: max(12px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.plate {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  width: 100%; height: max(560px, calc(100vh - 24px)); padding: 48px 24px 64px;
+  background: var(--mat); border: 0; cursor: pointer; scroll-margin-top: 12px;
+  transition: background .4s ease;
+}
+.plate .sheet { width: auto; height: min(78%, 760px); aspect-ratio: 3 / 4; max-width: 70%; }
+.plate.fmt-landscape .sheet { aspect-ratio: 4 / 3; height: auto; width: min(64%, 760px); }
+.plate.fmt-small .sheet { height: min(48%, 460px); }
+.plate.fmt-large .sheet { height: min(86%, 840px); }
+.plate .cap {
+  position: absolute; left: 16px; right: 16px; bottom: 14px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px;
+  font-family: var(--mono); font-size: 12px; color: var(--ink); text-align: left;
+}
+.plate .cap .open { color: var(--blue); }
+.plate:hover, .plate:focus-visible { background: var(--mat-hover); }
+.plate:hover .sheet, .plate:focus-visible .sheet { transform: translateY(-6px); box-shadow: 0 1px 0 rgba(17,17,17,.10), 0 22px 34px -20px rgba(17,17,17,.55); }
+.plate:hover .grain, .plate:focus-visible .grain { opacity: 1; }
+.plate:hover .shape.s2, .plate:focus-visible .shape.s2 { transform: translate(5px, 3px); }
+.plate:hover img.detail, .plate:focus-visible img.detail { opacity: 1; }
+.plate.is-sold .sheet { opacity: .6; }
+
+@media (max-width: 960px) {
+  .shop-split { display: block; }
+  .split-side { position: static; height: auto; overflow: visible; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 24px 16px; }
+  .side-foot { display: none; }
+  .split-main { padding: 0 max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); }
+  .plate { height: auto; aspect-ratio: 4 / 5; min-height: 0; max-width: 100%; padding: 32px 16px 56px; }
+  .plate .sheet { height: auto; width: 72%; max-width: 72%; }
+  .plate.fmt-small .sheet { width: 48%; }
+  .plate.fmt-landscape .sheet { width: 84%; max-width: 84%; }
+  .plate.fmt-large .sheet { width: 80%; max-width: 80%; }
+}

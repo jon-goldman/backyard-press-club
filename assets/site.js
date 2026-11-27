@@ -123,41 +123,71 @@
 
   function openFromHash() {
     var h = location.hash.slice(1);
-    if (!h) return;
+    if (!h || /-print$/.test(h)) return;
     for (var i = 0; i < WORKS.length; i++) if (slug(WORKS[i].no) === h) { openQuick(i); return; }
   }
 
-  /* ---------- Shop ---------- */
-  function shop(root) {
-    var grid = root.querySelector('[data-grid]');
-    var tabs = root.querySelectorAll('[data-filter]');
-    var current = 'All';
-    var plural = { Print: 'Prints', Zine: 'Zines', Poster: 'Posters', Book: 'Books' };
+  /* ---------- Shop (board C: fixed index on the left, prints scrolling on the right) ---------- */
+  // The mat follows the real format, so size reads at a glance.
+  function format(w) {
+    var s = String(w.size).toUpperCase();
+    if (/A2|A1/.test(s)) return 'large';
+    if (/A4/.test(s)) return 'landscape';
+    if (/A5|A6/.test(s)) return 'small';
+    return 'tall';
+  }
 
-    function draw() {
-      var html = '';
-      WORKS.forEach(function (w, i) {
-        if (w.status === 'sold-out') return;               // the shop only shows what can be bought
-        if (current !== 'All' && plural[w.type] !== current) return;
-        html +=
-          '<button type="button" class="work" data-work="' + i + '" aria-label="' + esc(w.title + ' by ' + w.artist + ', ' + w.price) + '">' +
-            '<span class="mat">' + sheet(w, i) + '</span>' +
-            '<span class="line1"><span class="display">' + esc(w.title) + '</span><span class="price">' + esc(w.price) + '</span></span>' +
-            '<span class="line2"><span>' + esc(w.artist) + '</span><span aria-hidden="true">·</span>' + dots(w) +
-            '<span class="mono">' + esc(w.inks.join(' + ')) + ' · ' + esc(w.size) + '</span>' + statusLabel(w) + '</span>' +
-          '</button>';
-      });
-      grid.innerHTML = html || '<p class="empty">Nothing in this section right now. See the <a href="catalogue.html">catalogue</a> for past editions.</p>';
-    }
-    tabs.forEach(function (t) {
-      t.addEventListener('click', function () {
-        current = t.getAttribute('data-filter');
-        tabs.forEach(function (o) { o.setAttribute('aria-pressed', String(o === t)); });
-        draw();
-      });
+  function shop(root) {
+    var index = root.querySelector('[data-index]');
+    var prints = root.querySelector('[data-prints]');
+    // Newest first, with sold-out works moved to the end so the shop opens on something you can buy.
+    var all = WORKS.map(function (w, i) { return i; }).reverse();
+    var order = all.filter(function (i) { return WORKS[i].status !== 'sold-out'; })
+      .concat(all.filter(function (i) { return WORKS[i].status === 'sold-out'; }));
+
+    index.insertAdjacentHTML('beforeend', order.map(function (i) {
+      var w = WORKS[i], sold = w.status === 'sold-out';
+      return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
+        '<span class="no">' + esc(w.no) + '</span>' +
+        '<span class="t">' + esc(w.title) + ', <span>' + esc(w.artist) + '</span></span>' +
+        '<span class="p">' + (sold ? 'Sold out' : esc(w.price)) + '</span></a>';
+    }).join(''));
+
+    prints.innerHTML = order.map(function (i) {
+      var w = WORKS[i], sold = w.status === 'sold-out';
+      return '<button type="button" class="plate fmt-' + format(w) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
+        sheet(w, i) +
+        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : '') + '</span>' +
+        '<span>' + esc(w.inks.join(', ')) + ' · ' + esc(w.size) + '</span></span>' +
+      '</button>';
+    }).join('');
+
+    // Index rows scroll the right column to their print instead of jumping the page.
+    index.addEventListener('click', function (e) {
+      var a = e.target.closest('[data-jump]');
+      if (!a) return;
+      e.preventDefault();
+      var el = document.getElementById(slug(WORKS[a.getAttribute('data-jump')].no) + '-print');
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (el) { el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }); el.focus({ preventScroll: true }); }
     });
-    draw();
-    bindQuick(grid);
+
+    // Mark the index row for the print in view.
+    if ('IntersectionObserver' in window) {
+      var rows = {};
+      index.querySelectorAll('[data-jump]').forEach(function (r) { rows[r.getAttribute('data-jump')] = r; });
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          Object.keys(rows).forEach(function (k) { rows[k].classList.remove('is-current'); rows[k].removeAttribute('aria-current'); });
+          var r = rows[en.target.getAttribute('data-work')];
+          if (r) { r.classList.add('is-current'); r.setAttribute('aria-current', 'true'); }
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      prints.querySelectorAll('.plate').forEach(function (p) { io.observe(p); });
+    }
+
+    bindQuick(prints);
   }
 
   /* ---------- Catalogue ---------- */
