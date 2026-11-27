@@ -16,7 +16,7 @@
     year      year printed
     price     unframed price, shown as written, e.g. "$45"
     framed    framed price, or "" if not offered framed
-    status    "available", "few-left" or "sold-out"
+    status    "available" or "sold-out"
     image     photo of the print, e.g. "images/bpc-001.jpg" (leave "" to show an ink sketch)
     detail    optional close-up (not shown on the site for now), e.g. "images/bpc-001-detail.jpg"
     photo     optional second view on the print's page, e.g. a framed photo: "images/photos/bpc-001.jpg"
@@ -41,6 +41,10 @@ window.BPC_INKS = {
 };
 
 /* Inks shown in the picker on the Riso printing page. */
+/* Email signup: the form ID of a free Kit form (kit.com, free up to 10,000 subscribers).
+   Leave "" until it exists; the signup shows as "coming soon". */
+window.BPC_SIGNUP_FORM = '';
+
 window.BPC_DRUMS = ['Federal Blue', 'Sunflower', 'Teal', 'Orange', 'Green', 'Aqua', 'Brown', 'Black'];
 
 var EZGI_JON = 'Ezgi Eyigor & Jon Goldman';

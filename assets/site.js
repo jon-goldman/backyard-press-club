@@ -57,9 +57,10 @@
     }).join('') + '</span>';
   }
 
+  // Sold out is set by hand in works.js (status: "sold-out"); there are no stock counts.
+  function isSold(w) { return w.status === 'sold-out'; }
   function statusLabel(w) {
-    if (w.status === 'sold-out') return '<span class="status">Sold out</span>';
-    if (w.status === 'few-left') return '<span class="status few">Few left</span>';
+    if (isSold(w)) return '<span class="status">Sold out</span>';
     return '';
   }
 
@@ -85,7 +86,7 @@
     var w = WORKS[idx];
     if (!w) return;
     var d = ensureDialog();
-    var sold = w.status === 'sold-out';
+    var sold = isSold(w);
     var buy;
     if (sold) {
       buy = '<span class="btn" aria-disabled="true">Sold out</span>' +
@@ -150,11 +151,11 @@
     var prints = root.querySelector('[data-prints]');
     // Newest first, with sold-out works moved to the end so the shop opens on something you can buy.
     var all = WORKS.map(function (w, i) { return i; }).reverse();
-    var order = all.filter(function (i) { return WORKS[i].status !== 'sold-out'; })
-      .concat(all.filter(function (i) { return WORKS[i].status === 'sold-out'; }));
+    var order = all.filter(function (i) { return !isSold(WORKS[i]); })
+      .concat(all.filter(function (i) { return isSold(WORKS[i]); }));
 
     index.insertAdjacentHTML('beforeend', order.map(function (i) {
-      var w = WORKS[i], sold = w.status === 'sold-out';
+      var w = WORKS[i], sold = isSold(w);
       return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
         '<span class="no">' + esc(w.no) + '</span>' +
         '<span class="t">' + esc(w.title) + ', <span>' + esc(w.colorway || w.artist) + '</span></span>' +
@@ -162,7 +163,7 @@
     }).join(''));
 
     prints.innerHTML = order.map(function (i) {
-      var w = WORKS[i], sold = w.status === 'sold-out';
+      var w = WORKS[i], sold = isSold(w);
       return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
         '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : '') + '</span>' +
@@ -216,7 +217,7 @@
               return '<button type="button" class="cat-row" role="row" data-work="' + i + '">' +
                 '<span class="mono mute" role="cell">' + esc(w.no) + '</span>' +
                 '<span class="thumb" role="cell">' + sheet(w, i, { noDetail: true }) + '</span>' +
-                '<span class="display t" role="cell">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (w.status === 'sold-out' ? ' <span class="status">Sold out</span>' : '') + '</span>' +
+                '<span class="display t" role="cell">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (isSold(w) ? ' <span class="status">Sold out</span>' : '') + '</span>' +
                 '<span role="cell">' + esc(w.artist) + '</span>' +
                 '<span role="cell" style="color:#333">' + esc(w.type) + '</span>' +
                 '<span role="cell" class="num">' + esc(w.year) + '</span>' +
@@ -225,7 +226,7 @@
           '</div></div>';
       } else {
         out.innerHTML = '<div class="cat-grid">' + WORKS.map(function (w, i) {
-          return '<button type="button" class="work' + (w.status === 'sold-out' ? ' is-sold' : '') + '" data-work="' + i + '">' +
+          return '<button type="button" class="work' + (isSold(w) ? ' is-sold' : '') + '" data-work="' + i + '">' +
             '<span class="mat' + (w.image ? ' has-photo' : '') + '">' + picture(w, i) + '</span>' +
             '<span class="meta"><span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
             '<span class="display">' + esc(w.title) + '</span>' + statusLabel(w) + '</span>' +
@@ -284,7 +285,7 @@
     var idx = -1;
     for (var i = 0; i < WORKS.length; i++) if (slug(WORKS[i].no) === want) idx = i;
     if (idx === -1) { root.querySelector('[data-missing]').hidden = false; return; }
-    var w = WORKS[idx], sold = w.status === 'sold-out';
+    var w = WORKS[idx], sold = isSold(w);
     document.title = w.title + (w.colorway ? ', ' + w.colorway : '') + ' · Backyard Press Club';
 
     var views = [{ key: 'print', label: 'Print' }];
@@ -295,7 +296,7 @@
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
 
     var buy;
-    if (sold) buy = '<span class="btn" aria-disabled="true">Sold out</span>';
+    if (sold) buy = '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">This edition is gone. It stays here as part of the record.</span>';
     else if (w.buy) buy = '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>';
     else buy = '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span><span class="mono mute">[Checkout link coming soon]</span>';
 
@@ -344,7 +345,7 @@
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered</dd>' +
+            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered' + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
@@ -391,7 +392,25 @@
     }
   }
 
+  /* ---------- Email signup (free Kit form; id in works.js) ---------- */
+  function signup() {
+    var id = window.BPC_SIGNUP_FORM || '';
+    var html = function (cls) {
+      return '<form class="signup ' + cls + '"' + (id ? ' action="https://app.kit.com/forms/' + esc(id) + '/subscriptions" method="post"' : '') + '>' +
+        '<label for="su-' + cls + '">New prints by email, a few times a year.</label>' +
+        '<span class="su-row"><input id="su-' + cls + '" type="email" name="email_address" required placeholder="you@example.com" autocomplete="email"' + (id ? '' : ' disabled') + '>' +
+        '<button type="submit" class="btn"' + (id ? '' : ' disabled') + '>Sign up</button></span>' +
+        (id ? '' : '<span class="mono mute">[Signup coming soon]</span>') +
+      '</form>';
+    };
+    var foot = document.querySelector('.site-footer .bar');
+    if (foot) foot.insertAdjacentHTML('beforebegin', html('foot'));
+    var side = document.querySelector('.side-foot');
+    if (side) side.insertAdjacentHTML('beforebegin', html('side'));
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    signup();
     var page = document.body.getAttribute('data-page');
     if (page === 'shop') shop(document);
     if (page === 'catalogue') catalogue(document);
