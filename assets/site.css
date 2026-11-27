@@ -107,7 +107,6 @@ main.wrap { padding-block: 64px 112px; }
   transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .45s;
 }
 .sheet img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .4s; }
-.sheet img.detail { opacity: 0; }
 .sheet .shape { position: absolute; mix-blend-mode: multiply; opacity: .92; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
 .sheet .grain {
   position: absolute; inset: 0; pointer-events: none; opacity: .55;
@@ -121,7 +120,6 @@ main.wrap { padding-block: 64px 112px; }
 }
 .work:hover .grain, .work:focus-visible .grain { opacity: 1; }
 .work:hover .shape.s2, .work:focus-visible .shape.s2 { transform: translate(5px, 3px); }  /* the second pass shifts, like real misregistration */
-.work:hover img.detail, .work:focus-visible img.detail { opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
   .sheet, .sheet .shape, .mat { transition: none; }
   .work:hover .sheet { transform: none; }
@@ -303,7 +301,6 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .plate:hover .sheet, .plate:focus-visible .sheet { transform: translateY(-6px); box-shadow: 0 1px 0 rgba(17,17,17,.10), 0 22px 34px -20px rgba(17,17,17,.55); }
 .plate:hover .grain, .plate:focus-visible .grain { opacity: 1; }
 .plate:hover .shape.s2, .plate:focus-visible .shape.s2 { transform: translate(5px, 3px); }
-.plate:hover img.detail, .plate:focus-visible img.detail { opacity: 1; }
 .plate.is-sold .sheet { opacity: .6; }
 
 @media (max-width: 960px) {
@@ -318,20 +315,22 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
   .plate.fmt-large .sheet { width: 80%; max-width: 80%; }
 }
 
-/* Real print photos (Nov 2026): shown whole on the mat, close-up on hover. */
+/* Real print photos (Nov 2026): shown whole on the mat. Hover is quiet: the print lifts a few pixels and the title turns blue. */
 .photo { position: relative; display: block; max-width: 100%; }
-.photo img { display: block; max-width: 100%; height: auto; box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 18px 30px -20px rgba(17,17,17,.45); transition: opacity .45s ease; }
-.photo img.detail { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
-.plate:hover .photo img.detail, .plate:focus-visible .photo img.detail,
-.work:hover .photo img.detail, .work:focus-visible .photo img.detail { opacity: 1; }
+.photo img { display: block; max-width: 100%; height: auto; box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 18px 30px -20px rgba(17,17,17,.45); transition: transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .5s; }
+.plate:hover .photo img, .plate:focus-visible .photo img,
+.work:hover .photo img, .work:focus-visible .photo img { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 24px 34px -22px rgba(17,17,17,.5); }
+@media (prefers-reduced-motion: reduce) { .photo img { transition: none; } .plate:hover .photo img, .work:hover .photo img { transform: none; } }
 .plate.has-photo { padding: 40px 40px 64px; }
 .plate.has-photo .photo img { max-height: calc(max(560px, calc(100vh - 24px)) - 112px); width: auto; }
-.mat.has-photo { padding: 24px; }
-.mat.has-photo .photo img { max-height: 100%; width: auto; max-width: 100%; }
-.cat-grid .mat.has-photo .photo { max-height: 100%; }
+.mat.has-photo { position: relative; }
+.mat.has-photo .photo { position: absolute; inset: 24px; display: flex; align-items: center; justify-content: center; }
+.mat.has-photo .photo img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
 .ql .pic.has-photo { padding: 32px; }
 .ql .pic.has-photo .photo img { max-height: 70vh; width: auto; }
 @media (max-width: 960px) {
   .plate.has-photo { aspect-ratio: auto; padding: 20px 16px 64px; }
   .plate.has-photo .photo img { max-height: 80vh; }
 }
+.work .display { transition: color .3s; }
+.work:hover .display, .work:focus-visible .display { color: var(--blue); }

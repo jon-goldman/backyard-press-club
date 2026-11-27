@@ -18,7 +18,7 @@
     framed    framed price, or "" if not offered framed
     status    "available", "few-left" or "sold-out"
     image     photo of the print, e.g. "images/bpc-001.jpg" (leave "" to show an ink sketch)
-    detail    optional close-up shown on hover, e.g. "images/bpc-001-detail.jpg"
+    detail    optional close-up (not shown on the site for now), e.g. "images/bpc-001-detail.jpg"
     buy       the Stripe Payment Link for this work (leave "" until it exists)
     about     one or two sentences for the quick look
 */
@@ -56,5 +56,23 @@ window.BPC_WORKS = [
     image: 'images/tree-green-teal.jpg', detail: 'images/tree-green-teal-detail.jpg', buy: '', about: TREE_ABOUT },
   { no: 'BPC–005', title: 'Matador', artist: 'Jon Goldman', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '25', paper: '[Paper stock]', year: '2026', price: '[PRICE]', framed: '', status: 'available',
     image: 'images/matador.jpg', detail: 'images/matador-detail.jpg', buy: '',
-    about: '[Two lines about Matador.]' }
+    about: '[Two lines about Matador.]' },
+  { no: 'BPC–006', title: 'Water Stone Gradient', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/water-stone-gradient.jpg', detail: '', buy: '', about: '[Two lines about Water Stone Gradient.]' },
+  { no: 'BPC–007', title: 'Sparkle', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/sparkle.jpg', detail: '', buy: '', about: '[Two lines about Sparkle.]' },
+  { no: 'BPC–008', title: 'Seeing Through Trees', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/seeing-through-trees.jpg', detail: '', buy: '', about: '[Two lines about Seeing Through Trees.]' },
+  { no: 'BPC–009', title: 'Rainbowburn', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/rainbowburn.jpg', detail: '', buy: '', about: '[Two lines about Rainbowburn.]' },
+  { no: 'BPC–010', title: 'Flowers Up', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/flowers-up.jpg', detail: '', buy: '', about: '[Two lines about Flowers Up.]' },
+  { no: 'BPC–011', title: 'Foliage', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/foliage.jpg', detail: '', buy: '', about: '[Two lines about Foliage.]' },
+  { no: 'BPC–012', title: 'Flowers 4', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/flowers-4.jpg', detail: '', buy: '', about: '[Two lines about Flowers 4.]' },
+  { no: 'BPC–013', title: 'Dark Water', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/dark-water.jpg', detail: '', buy: '', about: '[Two lines about Dark Water.]' },
+  { no: 'BPC–014', title: 'Blue Water', artist: '[Artist]', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/blue-water.jpg', detail: '', buy: '', about: '[Two lines about Blue Water.]' }
 ];
