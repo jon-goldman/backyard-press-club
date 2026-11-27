@@ -34,7 +34,6 @@
     var inner = '';
     if (w.image) {
       inner += '<img src="' + esc(w.image) + '" alt="" loading="lazy">';
-      if (w.detail && !opts.noDetail) inner += '<img class="detail" src="' + esc(w.detail) + '" alt="" loading="lazy">';
     } else {
       var L = LAYOUTS[i % LAYOUTS.length];
       inner += '<span class="shape s1" style="' + L[0] + ';background:' + hex(w.inks[0]) + '"></span>';
@@ -46,11 +45,9 @@
 
   function inksText(w) { return w.inks.length ? w.inks.join(', ') : '[Inks]'; }
 
-  // A real photo of the print, shown whole; the close-up fades in on hover.
-  function photo(w, opts) {
-    opts = opts || {};
-    return '<span class="photo" aria-hidden="true"><img src="' + esc(w.image) + '" alt="" loading="lazy">' +
-      (w.detail && !opts.noDetail ? '<img class="detail" src="' + esc(w.detail) + '" alt="" loading="lazy">' : '') + '</span>';
+  // A real photo of the print, shown whole. On hover it lifts slightly off the mat.
+  function photo(w) {
+    return '<span class="photo" aria-hidden="true"><img src="' + esc(w.image) + '" alt="" loading="lazy"></span>';
   }
   function picture(w, i, opts) { return w.image ? photo(w, opts) : sheet(w, i, opts); }
 
