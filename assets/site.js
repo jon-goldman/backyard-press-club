@@ -105,7 +105,7 @@
         '<div class="body">' +
           '<div class="top"><span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
           '<button type="button" class="close" data-close>Close</button></div>' +
-          '<h2 class="display" id="ql-title">' + esc(w.title) + ' <span class="by">by ' + esc(w.artist) + '</span></h2>' +
+          '<h2 class="display" id="ql-title">' + esc(w.title) + (w.colorway ? ' <span class="by">' + esc(w.colorway) + '</span>' : '') + '</h2>' +
           '<p>' + esc(w.about) + '</p>' +
           '<dl>' +
             '<dt>Inks</dt><dd>' + (w.inks.length ? w.inks.map(function (n) {
@@ -158,15 +158,15 @@
       var w = WORKS[i], sold = isSold(w);
       return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
         '<span class="no">' + esc(w.no) + '</span>' +
-        '<span class="t">' + esc(w.title) + ', <span>' + esc(w.colorway || w.artist) + '</span></span>' +
+        '<span class="t">' + esc(w.title) + (w.colorway ? ', <span>' + esc(w.colorway) + '</span>' : '') + '</span>' +
         '<span class="p">' + (sold ? 'Sold out' : esc(w.price)) + '</span></a>';
     }).join(''));
 
     prints.innerHTML = order.map(function (i) {
       var w = WORKS[i], sold = isSold(w);
-      return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
+      return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + (w.colorway ? ', ' + w.colorway : '') + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
-        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : '') + '</span>' +
+        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (sold ? ' · Sold out' : '') + '</span>' +
         '<span>' + esc(inksText(w)) + ' · ' + esc(w.size) + '</span></span>' +
       '</button>';
     }).join('');
@@ -212,13 +212,13 @@
       if (view === 'list') {
         out.innerHTML =
           '<div class="cat-scroll"><div class="cat-list" role="table" aria-label="All works">' +
-            '<div class="cat-row head" role="row"><span role="columnheader">No.</span><span role="columnheader"><span class="skip">Picture</span></span><span role="columnheader">Title</span><span role="columnheader">Artist</span><span role="columnheader">Format</span><span role="columnheader" class="num">Year</span></div>' +
+            '<div class="cat-row head" role="row"><span role="columnheader">No.</span><span role="columnheader"><span class="skip">Picture</span></span><span role="columnheader">Title</span><span role="columnheader">Inks</span><span role="columnheader">Format</span><span role="columnheader" class="num">Year</span></div>' +
             WORKS.map(function (w, i) {
               return '<button type="button" class="cat-row" role="row" data-work="' + i + '">' +
                 '<span class="mono mute" role="cell">' + esc(w.no) + '</span>' +
                 '<span class="thumb" role="cell">' + sheet(w, i, { noDetail: true }) + '</span>' +
                 '<span class="display t" role="cell">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (isSold(w) ? ' <span class="status">Sold out</span>' : '') + '</span>' +
-                '<span role="cell">' + esc(w.artist) + '</span>' +
+                '<span role="cell">' + (w.inks.length ? esc(w.inks.join(', ')) : '<span class="mute">[Inks]</span>') + '</span>' +
                 '<span role="cell" style="color:#333">' + esc(w.type) + '</span>' +
                 '<span role="cell" class="num">' + esc(w.year) + '</span>' +
               '</button>';
@@ -339,7 +339,7 @@
         '<div class="pp-text">' +
           '<span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
           '<h1 class="display">' + esc(w.title) + '</h1>' +
-          '<p class="by">' + esc(w.artist) + (w.colorway ? '<br><span class="mute">' + esc(w.colorway) + '</span>' : '') + '</p>' +
+          (w.colorway ? '<p class="by">' + esc(w.colorway) + '</p>' : '') +
           '<p class="about">' + esc(w.about) + '</p>' +
           '<dl class="facts">' +
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
