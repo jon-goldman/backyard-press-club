@@ -57,19 +57,10 @@
     }).join('') + '</span>';
   }
 
-  // Availability comes from works.js: "left" (copies still for sale) wins over "status".
-  function num(v) { var n = parseInt(v, 10); return isNaN(n) ? null : n; }
-  function isSold(w) { return w.status === 'sold-out' || num(w.left) === 0; }
-  function isFew(w) { var l = num(w.left); return !isSold(w) && (l !== null ? l <= 5 : w.status === 'few-left'); }
-  function leftText(w) {
-    if (isSold(w)) return 'Sold out';
-    var l = num(w.left), e = num(w.edition);
-    if (l === null) return w.status === 'few-left' ? 'Few left' : '';
-    return l + (e !== null ? ' of ' + e : '') + ' left';
-  }
+  // Sold out is set by hand in works.js (status: "sold-out"); there are no stock counts.
+  function isSold(w) { return w.status === 'sold-out'; }
   function statusLabel(w) {
     if (isSold(w)) return '<span class="status">Sold out</span>';
-    if (isFew(w)) return '<span class="status few">' + esc(leftText(w)) + '</span>';
     return '';
   }
 
@@ -122,7 +113,7 @@
             }).join('') : '[Inks]') + '</dd>' +
             '<dt>Size</dt><dd>' + size + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + (leftText(w) && !isSold(w) ? '<br><span class="mute">' + esc(leftText(w)) + '</span>' : '') + '</dd>' +
+            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
           '<div class="buy">' + buy + '<a class="more" href="' + pageUrl(w) + '">See the full page</a></div>' +
@@ -175,7 +166,7 @@
       var w = WORKS[i], sold = isSold(w);
       return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
-        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : isFew(w) ? ' · ' + esc(leftText(w)) : '') + '</span>' +
+        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : '') + '</span>' +
         '<span>' + esc(inksText(w)) + ' · ' + esc(w.size) + '</span></span>' +
       '</button>';
     }).join('');
@@ -354,7 +345,7 @@
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered' + (leftText(w) ? ' · <span class="mute">' + esc(leftText(w)) + '</span>' : '') + '</dd>' +
+            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered' + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +

@@ -12,7 +12,7 @@ Plain HTML, CSS and JavaScript. No build step: open `index.html` in a browser to
 Everything comes from `assets/works.js`. Copy a block, fill it in, and:
 1. Put photos in an `images/` folder and set `image`.
 2. In Stripe, create a Payment Link for the print (Products → Payment Links), turn on "Let customers adjust quantity" and collect shipping address. Paste the link into `buy`.
-3. Set `left` to how many are still for sale, e.g. `"12"`. The site shows "12 of 50 left", flags it when 5 or fewer remain, and treats `"0"` as sold out: it moves to the end of the shop, fades back, and stays in the catalogue.
+3. When it sells out, set `status: "sold-out"`. It moves to the end of the shop, fades back, and stays in the catalogue.
 
 ## Still to fill
 Every `[bracketed]` item: titles, prices, paper, city, email, Instagram handle, and the margin size on the printing page.
