@@ -115,7 +115,7 @@
             '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
-          '<div class="buy">' + buy + '</div>' +
+          '<div class="buy">' + buy + '<a class="more" href="' + pageUrl(w) + '">See the full page</a></div>' +
         '</div>' +
       '</div>';
     if (!d.open) d.showModal();
@@ -237,7 +237,10 @@
       t.addEventListener('click', function () { view = t.getAttribute('data-view'); store('bpc-view', view); draw(); });
     });
     draw();
-    bindQuick(out);
+    out.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-work]');
+      if (el) location.href = pageUrl(WORKS[Number(el.getAttribute('data-work'))]);
+    });
   }
 
   /* ---------- Ink picker (Riso printing page) ---------- */
@@ -272,11 +275,141 @@
     draw();
   }
 
+
+  /* ---------- One print's page (print.html?no=bpc-002) ---------- */
+  function pageUrl(w) { return 'print.html?no=' + slug(w.no); }
+
+  function printPage(root) {
+    var want = (new URLSearchParams(location.search).get('no') || '').toLowerCase();
+    var idx = -1;
+    for (var i = 0; i < WORKS.length; i++) if (slug(WORKS[i].no) === want) idx = i;
+    if (idx === -1) { root.querySelector('[data-missing]').hidden = false; return; }
+    var w = WORKS[idx], sold = w.status === 'sold-out';
+    document.title = w.title + (w.colorway ? ', ' + w.colorway : '') + ' · Backyard Press Club';
+
+    var views = [{ key: 'print', label: 'Print' }];
+    if (w.photo) views.push({ key: 'photo', label: 'Photo' });
+    if (w.layers && w.layers.length === w.inks.length && w.layers.length) views.push({ key: 'inks', label: 'Ink by ink' });
+
+    var siblings = WORKS.map(function (x, j) { return j; }).filter(function (j) { return j !== idx && WORKS[j].title === w.title && WORKS[j].colorway; });
+    var prev = WORKS[idx - 1], next = WORKS[idx + 1];
+
+    var buy;
+    if (sold) buy = '<span class="btn" aria-disabled="true">Sold out</span>';
+    else if (w.buy) buy = '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>';
+    else buy = '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span><span class="mono mute">[Checkout link coming soon]</span>';
+
+    var inkList = w.inks.length ? w.inks.map(function (n) {
+      return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
+    }).join('') : '[Inks]';
+
+    // The ink-by-ink stack: a blank sheet, then each ink printed over the last.
+    var layers = '';
+    if (w.layers) {
+      layers = '<div class="pp-layers" data-layers style="--paper-tone:#f2ebd0">' +
+        '<img class="sizer" src="' + esc(w.image) + '" alt="">' +
+        w.layers.map(function (src, k) { return '<img class="layer" data-layer="' + k + '" src="' + esc(src) + '" alt="">'; }).join('') +
+      '</div>';
+    }
+    var steps = w.layers ? [{ label: 'Paper', cap: 'The blank sheet: ' + w.paper + '.' }].concat(w.inks.map(function (n, k) {
+      return { label: n, ink: n, cap: k === 0 ? 'Pass 1 of ' + w.inks.length + ': ' + n + ' goes down first.'
+        : 'Pass ' + (k + 1) + ' of ' + w.inks.length + ': ' + n + ' is printed over it. Where the inks overlap, they mix.' };
+    })) : [];
+
+    root.innerHTML =
+      '<nav class="crumbs mono" aria-label="Breadcrumb"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span></nav>' +
+      '<div class="pp">' +
+        '<div class="pp-fig">' +
+          '<div class="pp-stage" data-stage>' +
+            '<div class="pp-view" data-v="print"><span class="pp-img"><img src="' + esc(w.image) + '" alt="' + esc(w.title + (w.colorway ? ', ' + w.colorway : '') + ', scan of the print') + '"></span></div>' +
+            (w.photo ? '<div class="pp-view" data-v="photo" hidden><span class="pp-img"><img src="' + esc(w.photo) + '" alt="' + esc(w.title + ', photographed') + '" loading="lazy"></span></div>' : '') +
+            (layers ? '<div class="pp-view" data-v="inks" hidden>' + layers + '</div>' : '') +
+          '</div>' +
+          (views.length > 1 ? '<div class="pp-under">' +
+            '<div class="tabs" role="group" aria-label="View">' + views.map(function (v, k) {
+              return '<button type="button" class="tab" data-view="' + v.key + '" aria-pressed="' + (k === 0) + '">' + v.label + '</button>';
+            }).join('') + '</div>' +
+            (steps.length ? '<div class="pp-steps" data-steps hidden>' +
+              '<div class="steps-row">' + steps.map(function (st, k) {
+                return '<button type="button" class="step" data-step="' + k + '" aria-pressed="' + (k === steps.length - 1) + '">' +
+                  '<span class="n">' + k + '</span>' + (st.ink ? '<i style="background:' + hex(st.ink) + '" aria-hidden="true"></i>' : '') + esc(st.label) + '</button>';
+              }).join('') + '<button type="button" class="play" data-play>Play</button></div>' +
+              '<p class="mono mute" data-step-cap aria-live="polite"></p>' +
+            '</div>' : '') +
+          '</div>' : '') +
+        '</div>' +
+        '<div class="pp-text">' +
+          '<span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
+          '<h1 class="display">' + esc(w.title) + '</h1>' +
+          '<p class="by">' + esc(w.artist) + (w.colorway ? '<br><span class="mute">' + esc(w.colorway) + '</span>' : '') + '</p>' +
+          '<p class="about">' + esc(w.about) + '</p>' +
+          '<dl class="facts">' +
+            '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
+            '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
+            '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
+            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered</dd>' +
+            '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
+            '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
+          '</dl>' +
+          '<div class="pp-buy">' + buy + '</div>' +
+          (siblings.length ? '<div class="pp-sibs"><span class="mono mute">Also in this edition</span>' + siblings.map(function (j) {
+            var x = WORKS[j];
+            return '<a class="sib" href="' + pageUrl(x) + '"><span class="sib-img"><img src="' + esc(x.image) + '" alt="" loading="lazy"></span>' +
+              '<span><span class="display">' + esc(x.colorway) + '</span><br><span class="mono mute">' + esc(x.no) + '</span></span></a>';
+          }).join('') + '</div>' : '') +
+        '</div>' +
+      '</div>' +
+      '<nav class="pp-pager" aria-label="More prints">' +
+        (prev ? '<a href="' + pageUrl(prev) + '"><span class="mono mute">Previous · ' + esc(prev.no) + '</span><span class="display">' + esc(prev.title) + '</span></a>' : '<span></span>') +
+        (next ? '<a class="nx" href="' + pageUrl(next) + '"><span class="mono mute">Next · ' + esc(next.no) + '</span><span class="display">' + esc(next.title) + '</span></a>' : '<span></span>') +
+      '</nav>';
+
+    // Views
+    var stepsBox = root.querySelector('[data-steps]');
+    root.querySelectorAll('[data-view]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var v = b.getAttribute('data-view');
+        root.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+        root.querySelectorAll('.pp-view').forEach(function (x) { x.hidden = x.getAttribute('data-v') !== v; });
+        if (stepsBox) stepsBox.hidden = v !== 'inks';
+        if (v === 'inks') show(0, true);
+      });
+    });
+
+    // Ink by ink
+    if (!steps.length) return;
+    var cap = root.querySelector('[data-step-cap]');
+    var layerEls = root.querySelectorAll('[data-layer]');
+    var stepEls = root.querySelectorAll('[data-step]');
+    var timer = null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function show(k, autoplay) {
+      layerEls.forEach(function (l) { l.classList.toggle('on', Number(l.getAttribute('data-layer')) < k); });
+      stepEls.forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.getAttribute('data-step')) === k)); });
+      cap.textContent = steps[k].cap;
+      if (autoplay && !reduce) play();
+    }
+    function play() {
+      clearInterval(timer);
+      var k = 0; show(0);
+      timer = setInterval(function () {
+        k += 1; show(k);
+        if (k >= steps.length - 1) clearInterval(timer);
+      }, 1400);
+    }
+    stepEls.forEach(function (b) {
+      b.addEventListener('click', function () { clearInterval(timer); show(Number(b.getAttribute('data-step'))); });
+    });
+    root.querySelector('[data-play]').addEventListener('click', play);
+    show(steps.length - 1);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var page = document.body.getAttribute('data-page');
     if (page === 'shop') shop(document);
     if (page === 'catalogue') catalogue(document);
     if (page === 'printing') inkPicker(document);
+    if (page === 'print') printPage(document.querySelector('[data-print]'));
     if (page === 'shop' || page === 'catalogue') {
       openFromHash();
       window.addEventListener('hashchange', openFromHash);
