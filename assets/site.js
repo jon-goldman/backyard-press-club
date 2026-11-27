@@ -44,6 +44,16 @@
     return '<span class="sheet" aria-hidden="true">' + inner + '</span>';
   }
 
+  function inksText(w) { return w.inks.length ? w.inks.join(', ') : '[Inks]'; }
+
+  // A real photo of the print, shown whole; the close-up fades in on hover.
+  function photo(w, opts) {
+    opts = opts || {};
+    return '<span class="photo" aria-hidden="true"><img src="' + esc(w.image) + '" alt="" loading="lazy">' +
+      (w.detail && !opts.noDetail ? '<img class="detail" src="' + esc(w.detail) + '" alt="" loading="lazy">' : '') + '</span>';
+  }
+  function picture(w, i, opts) { return w.image ? photo(w, opts) : sheet(w, i, opts); }
+
   function dots(w) {
     return '<span class="dots" aria-hidden="true">' + w.inks.map(function (n) {
       return '<i style="background:' + hex(n) + '"></i>';
@@ -93,19 +103,20 @@
     var size = esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '');
     d.innerHTML =
       '<div class="ql">' +
-        '<div class="pic">' + sheet(w, idx, { noDetail: true }) + '</div>' +
+        '<div class="pic' + (w.image ? ' has-photo' : '') + '">' + picture(w, idx, { noDetail: true }) + '</div>' +
         '<div class="body">' +
           '<div class="top"><span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
           '<button type="button" class="close" data-close>Close</button></div>' +
           '<h2 class="display" id="ql-title">' + esc(w.title) + ' <span class="by">by ' + esc(w.artist) + '</span></h2>' +
           '<p>' + esc(w.about) + '</p>' +
           '<dl>' +
-            '<dt>Inks</dt><dd>' + w.inks.map(function (n) {
+            '<dt>Inks</dt><dd>' + (w.inks.length ? w.inks.map(function (n) {
               return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
-            }).join('') + '</dd>' +
+            }).join('') : '[Inks]') + '</dd>' +
             '<dt>Size</dt><dd>' + size + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ' copies · ' + esc(w.year) + '</dd>' +
+            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + '</dd>' +
+            '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
           '<div class="buy">' + buy + '</div>' +
         '</div>' +
@@ -149,16 +160,16 @@
       var w = WORKS[i], sold = w.status === 'sold-out';
       return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
         '<span class="no">' + esc(w.no) + '</span>' +
-        '<span class="t">' + esc(w.title) + ', <span>' + esc(w.artist) + '</span></span>' +
+        '<span class="t">' + esc(w.title) + ', <span>' + esc(w.colorway || w.artist) + '</span></span>' +
         '<span class="p">' + (sold ? 'Sold out' : esc(w.price)) + '</span></a>';
     }).join(''));
 
     prints.innerHTML = order.map(function (i) {
       var w = WORKS[i], sold = w.status === 'sold-out';
-      return '<button type="button" class="plate fmt-' + format(w) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
-        sheet(w, i) +
+      return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + ' by ' + w.artist + (sold ? ', sold out' : ', ' + w.price)) + '">' +
+        picture(w, i) +
         '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + ', ' + esc(w.artist) + (sold ? ' · Sold out' : '') + '</span>' +
-        '<span>' + esc(w.inks.join(', ')) + ' · ' + esc(w.size) + '</span></span>' +
+        '<span>' + esc(inksText(w)) + ' · ' + esc(w.size) + '</span></span>' +
       '</button>';
     }).join('');
 
@@ -208,7 +219,7 @@
               return '<button type="button" class="cat-row" role="row" data-work="' + i + '">' +
                 '<span class="mono mute" role="cell">' + esc(w.no) + '</span>' +
                 '<span class="thumb" role="cell">' + sheet(w, i, { noDetail: true }) + '</span>' +
-                '<span class="display t" role="cell">' + esc(w.title) + (w.status === 'sold-out' ? ' <span class="status">Sold out</span>' : '') + '</span>' +
+                '<span class="display t" role="cell">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (w.status === 'sold-out' ? ' <span class="status">Sold out</span>' : '') + '</span>' +
                 '<span role="cell">' + esc(w.artist) + '</span>' +
                 '<span role="cell" style="color:#333">' + esc(w.type) + '</span>' +
                 '<span role="cell" class="num">' + esc(w.year) + '</span>' +
@@ -218,7 +229,7 @@
       } else {
         out.innerHTML = '<div class="cat-grid">' + WORKS.map(function (w, i) {
           return '<button type="button" class="work' + (w.status === 'sold-out' ? ' is-sold' : '') + '" data-work="' + i + '">' +
-            '<span class="mat">' + sheet(w, i) + '</span>' +
+            '<span class="mat' + (w.image ? ' has-photo' : '') + '">' + picture(w, i) + '</span>' +
             '<span class="meta"><span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
             '<span class="display">' + esc(w.title) + '</span>' + statusLabel(w) + '</span>' +
           '</button>';
@@ -238,7 +249,7 @@
     var s1 = root.querySelector('[data-op1]');
     var s2 = root.querySelector('[data-op2]');
     var cap = root.querySelector('[data-op-caption]');
-    var names = Object.keys(INKS);
+    var names = (window.BPC_DRUMS || Object.keys(INKS)).filter(function (n) { return INKS[n]; });
     var picked = [0, 1];                       // first ink down, then the ink printed over it
 
     function draw() {
