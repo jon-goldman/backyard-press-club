@@ -7,13 +7,15 @@
     title     name of the piece
     artist    who made it
     type      "Print", "Zine", "Poster" or "Book"
+    colorway  optional, tells apart versions of one image, e.g. "Kelly Green and Teal"
     inks      ink names from INKS below, in print order
     size      e.g. "A3 · 297 × 420 mm"
     pages     zines and books only, e.g. "24 pages"
     edition   number of copies
     paper     paper stock
     year      year printed
-    price     shown as written, e.g. "£25"
+    price     unframed price, shown as written, e.g. "$45"
+    framed    framed price, or "" if not offered framed
     status    "available", "few-left" or "sold-out"
     image     photo of the print, e.g. "images/bpc-001.jpg" (leave "" to show an ink sketch)
     detail    optional close-up shown on hover, e.g. "images/bpc-001-detail.jpg"
@@ -22,23 +24,37 @@
 */
 
 window.BPC_INKS = {
-  'Federal Blue': '#3255a4',
-  'Sunflower':    '#ffb511',
-  'Teal':         '#00838a',
-  'Orange':       '#ff6c2f',
-  'Green':        '#00a95c',
-  'Aqua':         '#5ec8e5',
-  'Brown':        '#925f52',
-  'Black':        '#3d3b38'
+  'Federal Blue':     '#3255a4',
+  'Sunflower':        '#ffb511',
+  'Teal':             '#00838a',
+  'Orange':           '#ff6c2f',
+  'Green':            '#00a95c',
+  'Aqua':             '#5ec8e5',
+  'Brown':            '#925f52',
+  'Black':            '#3d3b38',
+  'Bright Red':       '#f15060',
+  'Kelly Green':      '#67b346',
+  'Purple':           '#765ba7',
+  'Fluorescent Pink': '#ff48b0'
 };
 
+/* Inks shown in the picker on the Riso printing page. */
+window.BPC_DRUMS = ['Federal Blue', 'Sunflower', 'Teal', 'Orange', 'Green', 'Aqua', 'Brown', 'Black'];
+
+var EZGI_JON = 'Ezgi Eyigor & Jon Goldman';
+var TREE_ABOUT = 'A tree at Lake Tahoe, photographed on 35mm film, mirrored, and run through the risograph. Up close it reads as a tree; at a distance the separations drift slightly off-register and it resolves into overlapping fields of colour. The first run sold out at the Brooklyn Fine Art Print Fair in a day and a half.';
+
 window.BPC_WORKS = [
-  { no: 'BPC–001', title: '[Title]', artist: '[Artist]', type: 'Print',  inks: ['Federal Blue', 'Sunflower'], size: 'A3', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'available', image: '', detail: '', buy: '', about: '[Two lines about the piece: what it is, how it was made, anything a buyer should know.]' },
-  { no: 'BPC–002', title: '[Title]', artist: '[Artist]', type: 'Zine',   inks: ['Teal', 'Orange'],            size: 'A5', pages: '[N] pages', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'available', image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–003', title: '[Title]', artist: '[Artist]', type: 'Print',  inks: ['Black', 'Sunflower'],        size: 'A3', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'sold-out',  image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–004', title: '[Title]', artist: '[Artist]', type: 'Poster', inks: ['Green', 'Federal Blue'],     size: 'A2', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'few-left',  image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–005', title: '[Title]', artist: '[Artist]', type: 'Print',  inks: ['Brown', 'Aqua'],             size: 'A4', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'available', image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–006', title: '[Title]', artist: '[Artist]', type: 'Zine',   inks: ['Orange', 'Federal Blue'],    size: 'A5', pages: '[N] pages', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'available', image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–007', title: '[Title]', artist: '[Artist]', type: 'Book',   inks: ['Green', 'Sunflower'],        size: 'A5', pages: '[N] pages', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'available', image: '', detail: '', buy: '', about: '[Two lines about the piece.]' },
-  { no: 'BPC–008', title: '[Title]', artist: '[Artist]', type: 'Poster', inks: ['Teal', 'Sunflower'],         size: 'A2', pages: '', edition: '[N]', paper: '[Paper stock]', year: '[Year]', price: '[PRICE]', status: 'sold-out',  image: '', detail: '', buy: '', about: '[Two lines about the piece.]' }
+  { no: 'BPC–001', title: 'Green Water', artist: EZGI_JON, type: 'Print', inks: [], size: '[Size]', pages: '', edition: '25', paper: '[Paper stock]', year: '2026', price: '$45', framed: '$120', status: 'available',
+    image: 'images/green-water.jpg', detail: 'images/green-water-detail.jpg', buy: '',
+    about: '[Two lines about Green Water.] Signed and numbered in pencil by both artists.' },
+  { no: 'BPC–002', title: 'Untitled (Tree Composition)', artist: EZGI_JON, type: 'Print', colorway: 'Sunflower and Bright Red', inks: ['Sunflower', 'Bright Red'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+    image: 'images/tree-sunflower-red.jpg', detail: 'images/tree-sunflower-red-detail.jpg', buy: '', about: TREE_ABOUT },
+  { no: 'BPC–003', title: 'Untitled (Tree Composition)', artist: EZGI_JON, type: 'Print', colorway: 'Purple and Fluorescent Pink', inks: ['Purple', 'Fluorescent Pink'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+    image: 'images/tree-purple-pink.jpg', detail: 'images/tree-purple-pink-detail.jpg', buy: '', about: TREE_ABOUT },
+  { no: 'BPC–004', title: 'Untitled (Tree Composition)', artist: EZGI_JON, type: 'Print', colorway: 'Kelly Green and Teal', inks: ['Kelly Green', 'Teal'], size: '11 × 17 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
+    image: 'images/tree-green-teal.jpg', detail: 'images/tree-green-teal-detail.jpg', buy: '', about: TREE_ABOUT },
+  { no: 'BPC–005', title: 'Matador', artist: 'Jon Goldman', type: 'Print', inks: [], size: '[Size]', pages: '', edition: '25', paper: '[Paper stock]', year: '2026', price: '[PRICE]', framed: '', status: 'available',
+    image: 'images/matador.jpg', detail: 'images/matador-detail.jpg', buy: '',
+    about: '[Two lines about Matador.]' }
 ];
