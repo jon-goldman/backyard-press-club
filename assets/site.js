@@ -289,7 +289,7 @@
 
     var views = [{ key: 'print', label: 'Print' }];
     if (w.photo) views.push({ key: 'photo', label: 'Photo' });
-    if (w.layers && w.layers.length === w.inks.length && w.layers.length) views.push({ key: 'inks', label: 'Ink by ink' });
+    if (w.layers && w.layers.length === w.inks.length && w.layers.length) views.push({ key: 'inks', label: 'Layers' });
 
     var siblings = WORKS.map(function (x, j) { return j; }).filter(function (j) { return j !== idx && WORKS[j].title === w.title && WORKS[j].colorway; });
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
@@ -303,18 +303,21 @@
       return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
     }).join('') : '[Inks]';
 
-    // The ink-by-ink stack: a blank sheet, then each ink printed over the last.
-    var layers = '';
+    // Layers: the paper at the bottom, one see-through sheet per ink in printing order.
+    // Pulled apart in 3D like the Drums view in Riso Studio (Jon, 11/27: "the earlier 3D layer view").
+    var PAPER_TONE = '#f2ebd0';   // Speckletone, the actual paper of the print
+    var layers = '', legend = '';
     if (w.layers) {
-      layers = '<div class="pp-layers" data-layers style="--paper-tone:#f2ebd0">' +
-        '<img class="sizer" src="' + esc(w.image) + '" alt="">' +
-        w.layers.map(function (src, k) { return '<img class="layer" data-layer="' + k + '" src="' + esc(src) + '" alt="">'; }).join('') +
+      layers = '<button type="button" class="stack3d" data-stack aria-label="Pull the inks apart or stack them back">' +
+        '<span class="sheet3d paper" style="background:' + PAPER_TONE + '"></span>' +
+        w.layers.map(function (src) { return '<img class="sheet3d ink" src="' + esc(src) + '" alt="">'; }).join('') +
+      '</button>';
+      legend = '<div class="pp-legend" data-legend hidden>' +
+        '<span><i style="background:' + PAPER_TONE + '"></i>Paper, ' + esc(w.paper) + '</span>' +
+        w.inks.map(function (n, k) { return '<span><i style="background:' + hex(n) + '"></i>' + esc(n) + ' <span class="mute">pass ' + (k + 1) + '</span></span>'; }).join('') +
+        '<button type="button" class="pp-toggle" data-toggle>Stack</button>' +
       '</div>';
     }
-    var steps = w.layers ? [{ label: 'Paper', cap: 'The blank sheet: ' + w.paper + '.' }].concat(w.inks.map(function (n, k) {
-      return { label: n, ink: n, cap: k === 0 ? 'Pass 1 of ' + w.inks.length + ': ' + n + ' goes down first.'
-        : 'Pass ' + (k + 1) + ' of ' + w.inks.length + ': ' + n + ' is printed over it. Where the inks overlap, they mix.' };
-    })) : [];
 
     root.innerHTML =
       '<nav class="crumbs mono" aria-label="Breadcrumb"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span></nav>' +
@@ -329,13 +332,7 @@
             '<div class="tabs" role="group" aria-label="View">' + views.map(function (v, k) {
               return '<button type="button" class="tab" data-view="' + v.key + '" aria-pressed="' + (k === 0) + '">' + v.label + '</button>';
             }).join('') + '</div>' +
-            (steps.length ? '<div class="pp-steps" data-steps hidden>' +
-              '<div class="steps-row">' + steps.map(function (st, k) {
-                return '<button type="button" class="step" data-step="' + k + '" aria-pressed="' + (k === steps.length - 1) + '">' +
-                  '<span class="n">' + k + '</span>' + (st.ink ? '<i style="background:' + hex(st.ink) + '" aria-hidden="true"></i>' : '') + esc(st.label) + '</button>';
-              }).join('') + '<button type="button" class="play" data-play>Play</button></div>' +
-              '<p class="mono mute" data-step-cap aria-live="polite"></p>' +
-            '</div>' : '') +
+            legend +
           '</div>' : '') +
         '</div>' +
         '<div class="pp-text">' +
@@ -365,43 +362,33 @@
       '</nav>';
 
     // Views
-    var stepsBox = root.querySelector('[data-steps]');
+    var legendBox = root.querySelector('[data-legend]');
+    var stack = root.querySelector('[data-stack]');
+    var toggle = root.querySelector('[data-toggle]');
+    var open = false;
+    function setOpen(o) {
+      open = o;
+      if (!stack) return;
+      var els = stack.querySelectorAll('.sheet3d'), n = els.length;
+      stack.classList.toggle('open', o);
+      els.forEach(function (el, i) {
+        el.style.transform = o ? 'translateY(' + (-(i - (n - 1) / 2) * 20) + '%) rotateX(58deg) rotateZ(-32deg) translateZ(' + (i * 4) + 'px)' : 'none';
+      });
+      toggle.textContent = o ? 'Stack' : 'Separate';
+    }
     root.querySelectorAll('[data-view]').forEach(function (b) {
       b.addEventListener('click', function () {
         var v = b.getAttribute('data-view');
         root.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
         root.querySelectorAll('.pp-view').forEach(function (x) { x.hidden = x.getAttribute('data-v') !== v; });
-        if (stepsBox) stepsBox.hidden = v !== 'inks';
-        if (v === 'inks') show(0, true);
+        if (legendBox) legendBox.hidden = v !== 'inks';
+        if (v === 'inks') { setOpen(false); setTimeout(function () { setOpen(true); }, 150); }
       });
     });
-
-    // Ink by ink
-    if (!steps.length) return;
-    var cap = root.querySelector('[data-step-cap]');
-    var layerEls = root.querySelectorAll('[data-layer]');
-    var stepEls = root.querySelectorAll('[data-step]');
-    var timer = null;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function show(k, autoplay) {
-      layerEls.forEach(function (l) { l.classList.toggle('on', Number(l.getAttribute('data-layer')) < k); });
-      stepEls.forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.getAttribute('data-step')) === k)); });
-      cap.textContent = steps[k].cap;
-      if (autoplay && !reduce) play();
+    if (stack) {
+      stack.addEventListener('click', function () { setOpen(!open); });
+      toggle.addEventListener('click', function () { setOpen(!open); });
     }
-    function play() {
-      clearInterval(timer);
-      var k = 0; show(0);
-      timer = setInterval(function () {
-        k += 1; show(k);
-        if (k >= steps.length - 1) clearInterval(timer);
-      }, 1400);
-    }
-    stepEls.forEach(function (b) {
-      b.addEventListener('click', function () { clearInterval(timer); show(Number(b.getAttribute('data-step'))); });
-    });
-    root.querySelector('[data-play]').addEventListener('click', play);
-    show(steps.length - 1);
   }
 
   document.addEventListener('DOMContentLoaded', function () {
