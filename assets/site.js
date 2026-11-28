@@ -163,7 +163,7 @@
             '<dt>Size</dt><dd>' + size + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
             '<dt>Edition</dt><dd>' + editionText(w) + ' · ' + esc(w.year) + '</dd>' +
-            '<dt>Price</dt><dd>' + pricesText(w) + '</dd>' +
+            (formatsOf(w).length > 1 ? '' : '<dt>Price</dt><dd>' + pricesText(w) + '</dd>') +
           '</dl>' +
           '<div class="buy">' + buy + '<a class="more" href="' + pageUrl(w) + '">See the full page</a></div>' +
         '</div>' +
@@ -414,7 +414,7 @@
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
             '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
-            '<dt>Price</dt><dd>' + pricesText(w) + '</dd>' +
+            (formatsOf(w).length > 1 ? '' : '<dt>Price</dt><dd>' + pricesText(w) + '</dd>') +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
           (siblings.length ? '<div class="pp-sibs"><span class="mono mute">Also in this edition</span>' + siblings.map(function (j) {
