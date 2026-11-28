@@ -468,6 +468,7 @@
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
             '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
+            (w.frame ? '<dt>Frame</dt><dd>Fits ' + esc(w.frame) + '</dd>' : '') +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
         '</div>' +
