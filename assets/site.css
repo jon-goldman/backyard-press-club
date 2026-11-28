@@ -580,7 +580,7 @@ img.ld-in { transition: opacity .5s ease; }
 
 /* Catalogue rows are plain links now (open in a new tab works). */
 .cat-row, .cat-row:hover, .cat-grid .work, .cat-grid .work:hover { color: var(--ink); }
-.cat-row .cf { color: #333; }
+.cat-row .cf { color: var(--ink); }
 
 /* Email signup: placement in the footer belongs to the footer work (PR 19); only the field changes here. */
 /* The field's edge passes 3:1 against white (WCAG non-text contrast). */
@@ -616,3 +616,7 @@ img.ld-in { transition: opacity .5s ease; }
   .cat-row > .cy { grid-area: yr; font-family: var(--mono); font-size: 12px; color: var(--mute); }
   .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 16px; padding-top: 28px; }
 }
+
+/* Text pages, round 4 (Nov 28, Jon: "clean, simple"). One black for all running text. */
+.split .copy, .steps span:last-child { color: var(--ink); }
+@media (min-width: 721px) { .cat-row { grid-template-columns: 80px 56px minmax(0, 1fr) 240px 88px 48px; } }
