@@ -309,6 +309,8 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
   .shop-split { display: block; }
   .split-side { position: static; height: auto; overflow: visible; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 24px 16px; }
   .side-foot { display: none; }
+  /* Phones (Nov 2026 clean-up): the prints come straight after the intro; the index is a desktop aid. */
+  .split-side .index, .split-side .signup { display: none; }
   .split-main { padding: 0 max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); }
   .plate { height: auto; aspect-ratio: 4 / 5; min-height: 0; max-width: 100%; padding: 32px 16px 56px; }
   .plate .sheet { height: auto; width: 72%; max-width: 72%; }
