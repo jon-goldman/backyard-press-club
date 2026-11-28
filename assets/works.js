@@ -87,3 +87,13 @@ window.BPC_WORKS = [
   { no: 'BPC–014', title: 'Blue Water', type: 'Print', inks: ['Aqua', 'Cornflower', 'Kelly Green'], size: '11 × 17 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/blue-water.jpg', detail: '', buy: 'https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h', about: 'Sunlight netting across the floor of a pool, in Aqua, Cornflower and Kelly Green.' }
 ];
+
+/* Sets: several works sold together on one Stripe Payment Link (Nov 28, Jon approved).
+   items   catalogue numbers in the set
+   buy     the set's Payment Link (leave "" until it exists) */
+window.BPC_SETS = [
+  { id: 'postcard-set', title: 'Postcard set', price: '$36',
+    items: ['BPC–006', 'BPC–007', 'BPC–008', 'BPC–009', 'BPC–010', 'BPC–013'],
+    about: 'All six postcards, one of each, with free shipping in the US.',
+    buy: '' }
+];
