@@ -417,6 +417,34 @@
     if (foot) foot.insertAdjacentHTML('beforebegin', html('foot'));
     var side = document.querySelector('.side-foot');
     if (side) side.insertAdjacentHTML('beforebegin', html('side'));
+    if (!id) return;
+    // Kit signup (Nov 28, Jon: "It should be setup"). Send in the background so the
+    // visitor stays on the page; if that fails for any reason, fall back to a plain
+    // form post, which lands on Kit's own confirmation page.
+    document.querySelectorAll('form.signup').forEach(function (f) {
+      f.addEventListener('submit', function (e) {
+        if (!window.fetch || !window.FormData) return;
+        e.preventDefault();
+        var btn = f.querySelector('button');
+        var note = f.querySelector('.su-note') || f.appendChild(document.createElement('span'));
+        note.className = 'su-note mono';
+        note.setAttribute('role', 'status');
+        btn.disabled = true;
+        note.textContent = 'Sending…';
+        fetch(f.action, { method: 'POST', body: new FormData(f), headers: { Accept: 'application/json' } })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (d && d.status === 'success') {
+              f.querySelector('.su-row').remove();
+              note.textContent = 'Thank you. Check your inbox to confirm.';
+            } else {
+              btn.disabled = false;
+              note.textContent = (d && d.errors && d.errors.messages && d.errors.messages[0]) || 'That did not go through. Please check the address and try again.';
+            }
+          })
+          .catch(function () { f.submit(); });
+      });
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {

@@ -43,7 +43,7 @@ window.BPC_INKS = {
 /* Inks shown in the picker on the Riso printing page. */
 /* Email signup: the form ID of a free Kit form (kit.com, free up to 10,000 subscribers).
    Leave "" until it exists; the signup shows as "coming soon". */
-window.BPC_SIGNUP_FORM = '';
+window.BPC_SIGNUP_FORM = '10253741';
 
 window.BPC_DRUMS = ['Federal Blue', 'Sunflower', 'Teal', 'Orange', 'Green', 'Aqua', 'Brown', 'Black'];
 

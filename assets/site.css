@@ -418,5 +418,6 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .signup input:disabled { opacity: .45; }
 .signup .btn { min-height: 48px; padding: 0 20px; }
 .signup .mono { font-size: 12px; }
+.signup .su-note { font-size: 14px; }
 .signup.side { margin: 32px 0 20px; }
 .signup.side label { font-size: 14px; }
