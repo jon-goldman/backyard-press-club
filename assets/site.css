@@ -523,3 +523,34 @@ img.ld { opacity: 0; }
 img.ld-in { transition: opacity .5s ease; }
 @media (prefers-reduced-motion: reduce) { img.ld-in { transition: none; } }
 .ink-col { flex: 1 1 400px; min-width: 0; }
+
+/* Design polish 3 (Nov 28, Jon: "Keep going"). Shop index: one line per row,
+   colourways as ink dots. */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.index-row .t { display: flex; align-items: baseline; gap: 10px; }
+.index-row .tt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.index-row .dots { display: inline-flex; gap: 3px; flex: none; transform: translateY(-1px); }
+.index-row .dots i { width: 8px; height: 8px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px rgba(17,17,17,.12); }
+/* Footer: signup and links share one ruled block, on the same two-column line as the text pages. */
+.site-footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 72px; row-gap: 28px; align-items: end; }
+.site-footer .wrap::before { content: ""; grid-column: 1 / -1; border-top: 1px solid var(--ink); }
+.site-footer .signup.foot { margin: 0; }
+.site-footer .bar { border-top: 0; padding-top: 0; flex-direction: column; align-items: flex-start; gap: 10px; justify-content: flex-end; }
+@media (max-width: 960px) {
+  .site-footer .wrap { grid-template-columns: minmax(0, 1fr); row-gap: 32px; }
+}
+/* Header on phones: wordmark and nav closer together. */
+@media (max-width: 720px) {
+  .site-header .wrap { padding-top: 16px; }
+  .site-header .bar { gap: 0 32px; padding-bottom: 6px; }
+  .nav { gap: 0 22px; }
+}
+/* Index column labels at the same 12px mono as the numbers. */
+.index-row.head { font-size: 12px; }
+/* Postcard set: every card at the same physical size, upright or sideways. */
+.set-card { height: 200px; }
+.set-card img { max-width: min(100%, 200px); max-height: 200px; }
+@media (max-width: 960px) {
+  .set-card { height: 110px; }
+  .set-card img { max-width: min(100%, 110px); max-height: 110px; }
+}

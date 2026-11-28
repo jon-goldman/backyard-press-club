@@ -222,7 +222,8 @@
       var w = WORKS[i], sold = isSold(w);
       return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
         '<span class="no">' + esc(w.no) + '</span>' +
-        '<span class="t">' + esc(w.title) + (w.colorway ? ', <span>' + esc(w.colorway) + '</span>' : '') + '</span>' +
+        // Design polish 3 (Nov 28): colourways show as ink dots so every row stays one line.
+        '<span class="t"><span class="tt">' + esc(w.title) + '</span>' + (w.colorway ? '<span class="sr">, ' + esc(w.colorway) + '</span><span class="dots" aria-hidden="true" title="' + esc(w.colorway) + '">' + (w.inks || []).map(function (n) { return '<i style="background:' + hex(n) + '"></i>'; }).join('') + '</span>' : '') + '</span>' +
         '<span class="p">' + (sold ? 'Sold out' : esc(w.price)) + '</span></a>';
     }).join(''));
 
