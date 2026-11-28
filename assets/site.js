@@ -11,6 +11,9 @@
   });
   var INKS = window.BPC_INKS || {};
 
+  function editionText(w) {
+    return w.edition ? esc(w.edition) + ', signed and numbered' : 'Open run, unsigned';
+  }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -126,7 +129,7 @@
             }).join('') : '[Inks]') + '</dd>' +
             '<dt>Size</dt><dd>' + size + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + '</dd>' +
+            '<dt>Edition</dt><dd>' + editionText(w) + ' · ' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
           '<div class="buy">' + buy + '<a class="more" href="' + pageUrl(w) + '">See the full page</a></div>' +
@@ -355,7 +358,7 @@
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered' + '</dd>' +
+            '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
             '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
           '</dl>' +
