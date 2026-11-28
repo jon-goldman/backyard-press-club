@@ -1,9 +1,9 @@
 /*
-  Backyard Press Club: every work, in catalogue order.
-  This one file feeds the Shop, the Catalogue and the quick look.
+  Backyard Press Club: every work, in catalog order.
+  This one file feeds the Shop, the Catalog and the quick look.
 
   To add a work, copy one block and change it:
-    no        catalogue number, in order (BPC–001, BPC–002 ...)
+    no        catalog number, in order (BPC–001, BPC–002 ...)
     title     name of the piece
     type      "Print", "Zine", "Poster" or "Book"
     inks      ink names from INKS below, in print order
@@ -53,12 +53,12 @@ window.BPC_SIGNUP_FORM = '10253741';
 window.BPC_DRUMS = ['Teal', 'Sunflower', 'Bright Red', 'Scarlet', 'Kelly Green', 'Aqua', 'Blue', 'Purple', 'Black'];
 
 /* Every work is a collaboration between Ezgi Eyigor and Jon Goldman, so there is no per-print artist. */
-var TREE_ABOUT = 'A tree at Lake Tahoe, photographed on 35mm film, mirrored, and run through the risograph. Up close it reads as a tree; at a distance the separations drift slightly off-register and it resolves into overlapping fields of colour. The first run sold out at the Brooklyn Fine Art Print Fair in a day and a half.';
+var TREE_ABOUT = 'A tree at Lake Tahoe, shot on 35mm film and mirrored, printed in two inks that sit a little off-register. The first run sold out at the Brooklyn Fine Art Print Fair in a day and a half.';
 
 window.BPC_WORKS = [
   { no: 'BPC–001', title: 'Green Water', type: 'Print', inks: ['Sunflower', 'Light Lime', 'Kelly Green', 'Blue'], size: '10.5 × 16.25 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$120', status: 'available',
     image: 'images/green-water.jpg', photo: 'images/photos/green-water.jpg', detail: 'images/green-water-detail.jpg', buy: 'https://buy.stripe.com/8x228r7HQfoO0h3bi74Rq00', buyFramed: 'https://buy.stripe.com/5kQ4gzfaia4ud3P1Hx4Rq04',
-    about: 'Green water at Akyaka, on the Turkish coast, from a 35mm photograph, its surface broken up by reflected leaves and laid down in four inks. Signed and numbered in pencil by both artists.' },
+    about: 'Water at Akyaka, on the Turkish coast, from a 35mm photo, with leaves reflected on the surface. Printed in four inks and signed and numbered in pencil by both of us.' },
   { no: 'BPC–002', title: 'Untitled (Tree Composition)', type: 'Print', inks: ['Sunflower', 'Bright Red'], size: '10 × 15 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
     image: 'images/tree-sunflower-red.jpg', photo: 'images/photos/tree-sunflower-red.jpg', layers: ['images/layers/tree-sunflower-red-1.webp', 'images/layers/tree-sunflower-red-2.webp'], detail: 'images/tree-sunflower-red-detail.jpg', buy: 'https://buy.stripe.com/8x228r2nw2C24xjbi74Rq01', buyFramed: 'https://buy.stripe.com/eVq00jaU24Ka6Fr71R4Rq05', about: TREE_ABOUT },
   { no: 'BPC–003', title: 'Untitled (Tree Composition)', type: 'Print', inks: ['Purple', 'Fluorescent Pink'], size: '10 × 15 in', pages: '', edition: '50', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '$95', status: 'available',
@@ -67,33 +67,33 @@ window.BPC_WORKS = [
     image: 'images/tree-green-teal.jpg', photo: 'images/photos/tree-green-teal.jpg', layers: ['images/layers/tree-green-teal-1.webp', 'images/layers/tree-green-teal-2.webp'], detail: 'images/tree-green-teal-detail.jpg', buy: 'https://buy.stripe.com/7sY6oHgem4Ka0h3fyn4Rq03', buyFramed: 'https://buy.stripe.com/5kQdR9d2aekKbZL3PF4Rq07', about: TREE_ABOUT },
   { no: 'BPC–005', title: 'Matador', type: 'Print', inks: ['Scarlet', 'Purple', 'Black'], size: '15 × 10.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/matador.jpg', photo: 'images/photos/matador.jpg', detail: 'images/matador-detail.jpg', buy: 'https://buy.stripe.com/cNi6oHaU26SifbXcmb4Rq08',
-    about: 'A mid-century photograph of a bullfight in Spain from a family archive, last printed in 2003. Three matadors work three bulls in front of a full stand; the seams of the old scan are left in on purpose.' },
+    about: 'A bullfight, from an old family photo that was last printed in 2003. We left in the seams from the old scan.' },
   { no: 'BPC–006', title: 'Water Stone Gradient', type: 'Postcard', inks: ['Fluorescent Pink', 'Black', 'Blue', 'Sunflower'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/water-stone-gradient.jpg', detail: '', buy: 'https://buy.stripe.com/3cI5kDaU2b8yd3P85V4Rq0i', about: 'A narrow cove between two cliffs, the water turning from deep blue to pale green over the stones.' },
+    image: 'images/water-stone-gradient.jpg', detail: '', buy: 'https://buy.stripe.com/3cI5kDaU2b8yd3P85V4Rq0i', about: 'A narrow cove between two cliffs. The water goes from dark blue to pale green over the rocks.' },
   { no: 'BPC–007', title: 'Sparkle', type: 'Postcard', inks: ['Aqua', 'Blue'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/sparkle.jpg', detail: '', buy: 'https://buy.stripe.com/00wcN5faiekKd3P99Z4Rq0j', about: 'Sunlight catching on dark open water, the highlights left as bare paper.' },
+    image: 'images/sparkle.jpg', detail: '', buy: 'https://buy.stripe.com/00wcN5faiekKd3P99Z4Rq0j', about: 'Sun on dark water. The bright spots are bare paper.' },
   { no: 'BPC–008', title: 'Seeing Through Trees', type: 'Postcard', inks: ['Sunflower', 'Fluorescent Pink', 'Blue', 'Black'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/seeing-through-trees.jpg', detail: '', buy: 'https://buy.stripe.com/fZu14ne6e6Si5Bn5XN4Rq0k', about: 'A lake at dusk through a gap in the pines, with the film camera’s date stamp still in the corner.' },
+    image: 'images/seeing-through-trees.jpg', detail: '', buy: 'https://buy.stripe.com/fZu14ne6e6Si5Bn5XN4Rq0k', about: 'A lake at dusk through a gap in the pines. The film camera’s date stamp is still in the corner.' },
   { no: 'BPC–009', title: 'Rainbowburn', type: 'Postcard', inks: ['Aqua', 'Scarlet', 'Sunflower', 'Violet'], size: '6 × 4 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/rainbowburn.jpg', detail: '', buy: 'https://buy.stripe.com/7sY8wP7HQa4ugg1fyn4Rq0l', about: 'The Golden Gate Bridge from across the bay, with a light leak burning orange and pink across one side of the frame.' },
+    image: 'images/rainbowburn.jpg', detail: '', buy: 'https://buy.stripe.com/7sY8wP7HQa4ugg1fyn4Rq0l', about: 'The Golden Gate Bridge from across the bay, with an orange and pink light leak down one side.' },
   { no: 'BPC–010', title: 'Flowers Up', type: 'Postcard', inks: ['Fluorescent Pink', 'Black', 'Blue', 'Sunflower'], size: '6 × 4 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/flowers-up.jpg', detail: '', buy: 'https://buy.stripe.com/7sY5kD8LUfoOgg10Dt4Rq0m', about: 'Looking straight up into a tree in full blossom, the branches dark against a pale sky.' },
+    image: 'images/flowers-up.jpg', detail: '', buy: 'https://buy.stripe.com/7sY5kD8LUfoOgg10Dt4Rq0m', about: 'Looking straight up into a tree in bloom.' },
   { no: 'BPC–011', title: 'Foliage', type: 'Print', inks: ['Scarlet', 'Purple'], size: '5.5 × 8.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
-    image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: 'https://buy.stripe.com/3cIaEX1js1xYaVH85V4Rq0e', about: 'Fallen petals filling the frame, from a 2019 photograph. Printed in two inks, Purple over Scarlet.' },
+    image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: 'https://buy.stripe.com/3cIaEX1js1xYaVH85V4Rq0e', about: 'Fallen petals, from a 2019 photo. Purple printed over Scarlet.' },
   { no: 'BPC–012', title: 'Flowers 4', type: 'Print', inks: ['Aqua', 'Scarlet', 'Sunflower', 'Violet'], size: '8.5 × 5.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
-    image: 'images/flowers-4.jpg', detail: '', buy: 'https://buy.stripe.com/3cIfZh9PYa4u8Nzfyn4Rq0f', about: 'White flowers laid over a burst of red, violet and blue.' },
+    image: 'images/flowers-4.jpg', detail: '', buy: 'https://buy.stripe.com/3cIfZh9PYa4u8Nzfyn4Rq0f', about: 'White flowers over red, violet and blue.' },
   { no: 'BPC–013', title: 'Dark Water', type: 'Postcard', inks: ['Sunflower', 'Fluorescent Pink', 'Blue', 'Black'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/dark-water.jpg', detail: '', buy: 'https://buy.stripe.com/28E5kDfaidgGbZLgCr4Rq0n', about: 'Evening water, almost black, with the last of the light picked out along the ripples.' },
+    image: 'images/dark-water.jpg', detail: '', buy: 'https://buy.stripe.com/28E5kDfaidgGbZLgCr4Rq0n', about: 'Water in the evening, almost black, with a little light on the ripples.' },
   { no: 'BPC–014', title: 'Blue Water', type: 'Print', inks: ['Aqua', 'Cornflower', 'Kelly Green'], size: '11 × 17 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
-    image: 'images/blue-water.jpg', detail: '', buy: 'https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h', about: 'Sunlight netting across the floor of a pool, in Aqua, Cornflower and Kelly Green.' }
+    image: 'images/blue-water.jpg', detail: '', buy: 'https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h', about: 'Light on the bottom of a swimming pool.' }
 ];
 
 /* Sets: several works sold together on one Stripe Payment Link (Nov 28, Jon approved).
-   items   catalogue numbers in the set
+   items   catalog numbers in the set
    buy     the set's Payment Link (leave "" until it exists) */
 window.BPC_SETS = [
   { id: 'postcard-set', title: 'Postcard set', price: '$36',
     items: ['BPC–006', 'BPC–007', 'BPC–008', 'BPC–009', 'BPC–010', 'BPC–013'],
-    about: 'All six postcards, one of each, with free shipping in the US.',
+    about: 'All six postcards, one of each. Free shipping in the US.',
     buy: 'https://buy.stripe.com/9B6fZh5zI3G6gg12LB4Rq0o' }
 ];
