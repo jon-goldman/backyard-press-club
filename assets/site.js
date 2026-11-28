@@ -513,6 +513,17 @@
     });
   }
 
+  // Images fade in once loaded (design polish 2, Nov 28).
+  function fadeImages(root) {
+    root.querySelectorAll('main img').forEach(function (im) {
+      if (im.complete && im.naturalWidth) return;
+      im.classList.add('ld', 'ld-in');
+      var done = function () { im.classList.remove('ld'); };
+      im.addEventListener('load', done, { once: true });
+      im.addEventListener('error', done, { once: true });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     signup();
     var page = document.body.getAttribute('data-page');
@@ -524,6 +535,7 @@
       openFromHash();
       window.addEventListener('hashchange', openFromHash);
     }
+    fadeImages(document);
     var y = document.querySelector('[data-year]');
     if (y) y.textContent = new Date().getFullYear();
   });
