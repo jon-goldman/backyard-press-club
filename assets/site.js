@@ -342,7 +342,7 @@
         return '<button type="button" class="chip" aria-pressed="' + (picked.indexOf(i) !== -1) + '" data-i="' + i + '">' +
           '<span class="dot" style="background:' + INKS[n] + '" aria-hidden="true"></span>' +
           '<span>' + esc(n) + '</span>' +
-          '<span class="pass mono">' + (picked[0] === i ? '1st pass' : picked[1] === i ? '2nd pass' : '') + '</span></button>';
+          '<span class="sr">, </span><span class="pass mono">' + (picked[0] === i ? '1st pass' : picked[1] === i ? '2nd pass' : '') + '</span></button>';
       }).join('');
       s1.style.background = INKS[names[picked[0]]];
       s2.style.background = INKS[names[picked[1]]];
