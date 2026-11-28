@@ -501,3 +501,12 @@ img.ld-in { transition: opacity .5s ease; }
   .site-header .bar { gap: 0 32px; padding-bottom: 6px; }
   .nav { gap: 0 22px; }
 }
+/* Index column labels at the same 12px mono as the numbers. */
+.index-row.head { font-size: 12px; }
+/* Postcard set: every card at the same physical size, upright or sideways. */
+.set-card { height: 200px; }
+.set-card img { max-width: min(100%, 200px); max-height: 200px; }
+@media (max-width: 960px) {
+  .set-card { height: 110px; }
+  .set-card img { max-width: min(100%, 110px); max-height: 110px; }
+}
