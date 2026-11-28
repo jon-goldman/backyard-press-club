@@ -620,3 +620,6 @@ img.ld-in { transition: opacity .5s ease; }
 /* Design polish 5 (Nov 28, Jon: "clean, simple"). Shop index without column labels:
    one rule on top, rows speak for themselves. */
 .split-side .index { border-top: 1px solid var(--ink); }
+/* Design polish 6: the shop lede is one plain sentence (the nav already links Riso printing);
+   a little smaller on phones so the first print shows sooner. */
+@media (max-width: 720px) { .lede { font-size: var(--t-lead); } }
