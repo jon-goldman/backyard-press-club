@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>
+  // GitHub Pages serves this page for any missing address, however deep. Point every
+  // relative link at the site root so the styles, scripts and nav still resolve.
+  (function () {
+    var seg = location.pathname.split('/')[1];
+    var root = /\.github\.io$/.test(location.hostname) && seg ? '/' + seg + '/' : '/';
+    document.write('<base href="' + root + '">');
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
 <title>Not found · Backyard Press Club</title>
