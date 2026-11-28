@@ -29,7 +29,7 @@
   }
 
   /* Until a photo exists, each work is shown as a two-ink sketch.
-     The layout varies by catalogue position so the grid doesn't repeat. */
+     The layout varies by catalog position so the grid doesn't repeat. */
   var LAYOUTS = [
     ['left:9%;top:9%;width:58%;height:62%', 'right:9%;bottom:9%;width:56%;height:52%;border-radius:50%'],
     ['left:10%;top:16%;width:58%;aspect-ratio:1;border-radius:50%', 'right:10%;top:34%;width:58%;aspect-ratio:1;border-radius:50%'],
@@ -126,7 +126,7 @@
     return out;
   }
   function buyButtons(w, sold, soldNote) {
-    if (sold) return '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">' + esc(soldNote) + '</span>';
+    if (sold) return '<span class="btn" aria-disabled="true">Sold out</span>' + (soldNote ? '<span class="mono mute">' + esc(soldNote) + '</span>' : '');
     var fs = optionsOf(w);
     var picker = fs.length > 1
       ? '<fieldset class="fmt"><legend class="mono mute">Format</legend>' + fs.map(function (f, k) {
@@ -152,7 +152,7 @@
     if (!w) return;
     var d = ensureDialog();
     var sold = isSold(w);
-    var buy = buyButtons(w, sold, 'Stays in the catalogue as part of the record.');
+    var buy = buyButtons(w, sold, '');
     var size = esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '');
     d.innerHTML =
       '<div class="ql">' +
@@ -222,7 +222,7 @@
       var w = WORKS[i], sold = isSold(w);
       return '<a role="listitem" class="index-row' + (sold ? ' is-sold' : '') + '" href="#' + slug(w.no) + '-print" data-jump="' + i + '">' +
         '<span class="no">' + esc(w.no) + '</span>' +
-        // Design polish 3 (Nov 28): colourways show as ink dots so every row stays one line.
+        // Design polish 3 (Nov 28): colorways show as ink dots so every row stays one line.
         '<span class="t"><span class="tt">' + esc(w.title) + '</span>' + (w.colorway ? '<span class="sr">, ' + esc(w.colorway) + '</span><span class="dots" aria-hidden="true" title="' + esc(w.colorway) + '">' + (w.inks || []).map(function (n) { return '<i style="background:' + hex(n) + '"></i>'; }).join('') + '</span>' : '') + '</span>' +
         '<span class="p">' + (sold ? 'Sold out' : esc(w.price)) + '</span></a>';
     }).join(''));
@@ -256,7 +256,7 @@
             '<div class="set-buy">' + (set.buy
               ? '<a class="btn" href="' + esc(set.buy) + '" rel="noopener">Buy the set · ' + esc(set.price) + '</a>'
               : '<span class="btn" aria-disabled="true">Buy the set · ' + esc(set.price) + '</span>') +
-            '<span class="mono mute">' + (set.buy ? 'Secure checkout with Stripe. Free US shipping.' : 'Checkout opens soon. Free US shipping.') + '</span></div>' +
+            '<span class="mono mute">' + (set.buy ? 'Checkout by Stripe. Free US shipping.' : 'Checkout opens soon. Free US shipping.') + '</span></div>' +
           '</div>' +
         '</section>');
       index.insertAdjacentHTML('beforeend',
@@ -291,7 +291,7 @@
     bindQuick(prints);
   }
 
-  /* ---------- Catalogue ---------- */
+  /* ---------- Catalog ---------- */
   function catalogue(root) {
     var out = root.querySelector('[data-catalogue]');
     var count = root.querySelector('[data-count]');
@@ -386,7 +386,7 @@
     var ways = WORKS.map(function (x, j) { return j; }).filter(function (j) { return WORKS[j].title === w.title && WORKS[j].colorway; });
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
 
-    var buy = buyButtons(w, sold, 'This edition is gone. It stays here as part of the record.');
+    var buy = buyButtons(w, sold, '');
 
     var inkList = w.inks.length ? w.inks.map(function (n) {
       return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
@@ -455,9 +455,9 @@
           '</div>' : '') +
         '</div>' +
         '<div class="pp-text">' +
-          '<p class="kicker mono mute"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + ' · ' + esc(w.year) + '</p>' +
+          '<p class="kicker mono mute"><a href="catalog.html">Catalog</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + ' · ' + esc(w.year) + '</p>' +
           '<h1 class="display">' + esc(w.title) + '</h1>' +
-          (w.colorway ? '<div class="ways"><p class="by">' + esc(w.colorway) + '</p>' + (ways.length > 1 ? '<nav class="way-list" aria-label="Colourways">' + ways.map(function (j) {
+          (w.colorway ? '<div class="ways"><p class="by">' + esc(w.colorway) + '</p>' + (ways.length > 1 ? '<nav class="way-list" aria-label="Colorways">' + ways.map(function (j) {
             var x = WORKS[j];
             return '<a class="way' + (isSold(x) ? ' is-sold' : '') + '" href="' + pageUrl(x) + '"' + (j === idx ? ' aria-current="page"' : '') + ' title="' + esc(x.colorway) + '" aria-label="' + esc(x.colorway) + '">' +
               x.inks.map(function (n) { return '<i style="background:' + hex(n) + '"></i>'; }).join('') + '</a>';
@@ -568,7 +568,7 @@
     var id = window.BPC_SIGNUP_FORM || '';
     var html = function (cls) {
       return '<form class="signup ' + cls + '"' + (id ? ' action="https://app.kit.com/forms/' + esc(id) + '/subscriptions" method="post"' : '') + '>' +
-        '<label for="su-' + cls + '">New prints by email, a few times a year.</label>' +
+        '<label for="su-' + cls + '">Get an email when we have new prints.</label>' +
         '<span class="su-row"><input id="su-' + cls + '" type="email" name="email_address" required placeholder="you@example.com" autocomplete="email"' + (id ? '' : ' disabled') + '>' +
         '<button type="submit" class="btn"' + (id ? '' : ' disabled') + '>Sign up</button></span>' +
         (id ? '' : '<span class="mono mute">[Signup coming soon]</span>') +
@@ -597,10 +597,10 @@
           .then(function (d) {
             if (d && d.status === 'success') {
               f.querySelector('.su-row').remove();
-              note.textContent = 'Thank you. Check your inbox to confirm.';
+              note.textContent = 'Thanks. Check your email to confirm.';
             } else {
               btn.disabled = false;
-              note.textContent = (d && d.errors && d.errors.messages && d.errors.messages[0]) || 'That did not go through. Please check the address and try again.';
+              note.textContent = (d && d.errors && d.errors.messages && d.errors.messages[0]) || 'That didn\'t work. Check the address and try again.';
             }
           })
           .catch(function () { f.submit(); });
@@ -623,10 +623,10 @@
     signup();
     var page = document.body.getAttribute('data-page');
     if (page === 'shop') shop(document);
-    if (page === 'catalogue') catalogue(document);
+    if (page === 'catalog') catalogue(document);
     if (page === 'printing') inkPicker(document);
     if (page === 'print') printPage(document.querySelector('[data-print]'));
-    if (page === 'shop' || page === 'catalogue') {
+    if (page === 'shop' || page === 'catalog') {
       openFromHash();
       window.addEventListener('hashchange', openFromHash);
     }
