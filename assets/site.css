@@ -249,12 +249,13 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 /* Shop: board C, Nov 2026 (Jon: "left side is static and the right side you can
    scroll down to see the different prints"). A fixed text column with the index,
    and big prints stacked on the right. */
-.shop-split { display: flex; align-items: flex-start; min-height: 100vh; }
+/* Nov 28 (Jon: the landing page felt disjointed from the rest of the site): the shop now
+   sits under the same header, inside the same column, with the same footer as every page. */
+.shop-split { display: flex; align-items: flex-start; gap: 48px; padding-block: 40px 96px; }
 .split-side {
-  position: sticky; top: env(safe-area-inset-top, 0px);
-  flex: 0 0 min(420px, 34%); height: 100vh; overflow-y: auto;
-  padding-block: 28px 32px; padding-left: max(32px, env(safe-area-inset-left, 0px)); padding-right: 32px;
-  display: flex; flex-direction: column; gap: 28px;
+  position: sticky; top: 24px;
+  flex: 0 0 min(340px, 32%); max-height: calc(100vh - 48px); overflow-y: auto;
+  display: flex; flex-direction: column; gap: 32px;
 }
 .side-top { display: flex; align-items: center; min-height: 44px; }
 .wordmark { font-size: 20px; line-height: 1; }
@@ -282,10 +283,10 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .side-foot { margin: auto 0 0; line-height: 1.8; }
 .side-foot a { color: var(--ink); }
 
-.split-main { flex: 1 1 auto; min-width: 0; padding: 12px; padding-right: max(12px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.split-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
 .plate {
   position: relative; display: flex; align-items: center; justify-content: center;
-  width: 100%; height: max(560px, calc(100vh - 24px)); padding: 48px 24px 64px;
+  width: 100%; height: max(560px, calc(100vh - 48px)); padding: 48px 24px 64px;
   background: var(--mat); border: 0; cursor: pointer; scroll-margin-top: 12px;
   transition: background .4s ease;
 }
@@ -307,11 +308,12 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 
 @media (max-width: 960px) {
   .shop-split { display: block; }
-  .split-side { position: static; height: auto; overflow: visible; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); padding-block: 24px 16px; }
+  .shop-split { padding-block: 28px 72px; }
+  .split-side { position: static; max-height: none; overflow: visible; margin-bottom: 24px; }
   .side-foot { display: none; }
   /* Phones (Nov 2026 clean-up): the prints come straight after the intro; the index is a desktop aid. */
   .split-side .index, .split-side .signup { display: none; }
-  .split-main { padding: 0 max(12px, env(safe-area-inset-right, 0px)) 24px max(12px, env(safe-area-inset-left, 0px)); }
+  .split-main { gap: 12px; }
   .plate { height: auto; aspect-ratio: 4 / 5; min-height: 0; max-width: 100%; padding: 32px 16px 56px; }
   .plate .sheet { height: auto; width: 72%; max-width: 72%; }
   .plate.fmt-small .sheet { width: 48%; }
