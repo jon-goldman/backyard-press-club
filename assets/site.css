@@ -467,7 +467,8 @@ main.print-page { padding-bottom: 72px; }
   .stack3d.open { transform: none; }
   .s3-labels { display: none; }
   .byink { gap: 0 8px; }
-  .byink figcaption { font-size: 12px; }
+  .byink figcaption { font-size: 11px; line-height: 1.3; }
+  .byink figcaption .mono { display: none; }
   .pp-scale { left: 14px; bottom: 10px; }
   .pp-pager .display { font-size: 16px; }
   .pp-pager .display .t { display: none; }
