@@ -650,3 +650,8 @@ img.ld-in { transition: opacity .5s ease; }
 .signup { grid-template-columns: minmax(0, 1fr); }
 /* Small inline links in fact lists get a taller tap area. */
 .facts dd a { display: inline-block; padding-block: 4px; margin-block: -4px; }
+
+/* Info page and About additions (Nov 28): question-and-answer copy. */
+.qa h3 { margin: 12px 0 -10px; font-size: 15px; font-weight: 600; line-height: 1.4; }
+.qa h3:first-child { margin-top: 0; }
+.split .copy strong { font-weight: 600; }
