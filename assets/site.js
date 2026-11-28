@@ -410,7 +410,7 @@
         '<button type="button" class="stack3d" data-stack style="--n:' + sheets.length + '" aria-label="Pull the inks apart or stack them back">' +
           sheets.map(function (s, k) {
             return s.src
-              ? '<img class="sheet3d ink" style="--i:' + k + '" src="' + esc(s.src) + '" alt="">'
+              ? '<img class="sheet3d ink" style="--i:' + k + '" src="' + esc(s.src) + '" alt="" loading="lazy">'
               : '<span class="sheet3d paper" style="--i:' + k + ';background:' + PAPER_TONE + '"></span>';
           }).join('') +
         '</button>' +
@@ -425,6 +425,7 @@
         '<button type="button" class="pp-toggle" data-toggle>Stack</button>' +
       '</div>';
       // Ink by ink: each separation flat on its own sheet, then the finished print.
+      if (w.layersFrom === 'scan') legend = legend.replace('<button type="button" class="pp-toggle"', '<span class="pp-est mono mute">Split from the scan. No separation file survives.</span><button type="button" class="pp-toggle"');
       byInk = '<div class="byink" style="--cols:' + Array(w.inks.length + 1).join('minmax(0, 1fr) auto ') + 'minmax(0, 1fr)">' + w.inks.map(function (n, k) {
         return (k ? '<span class="op" aria-hidden="true">+</span>' : '') +
           '<figure><span class="bi-sheet" style="background:' + PAPER_TONE + '"><img src="' + esc(w.layers[k]) + '" alt="' + esc(n + ' layer') + '" loading="lazy"></span>' +
@@ -499,6 +500,12 @@
         l.style.left = (right - box.left + 20) + 'px';
         l.style.top = (r.top + r.height / 2 - box.top) + 'px';
       });
+    }
+    // The stack takes the shape of the plates, so a landscape print lies landscape.
+    if (stack) {
+      var first = stack.querySelector('img.sheet3d');
+      var shape = function () { if (first.naturalWidth) { stack.style.aspectRatio = first.naturalWidth + ' / ' + first.naturalHeight; stack.classList.toggle('is-wide', first.naturalWidth > first.naturalHeight); } };
+      first.complete ? shape() : first.addEventListener('load', shape, { once: true });
     }
     function setOpen(o) {
       open = o;

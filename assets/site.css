@@ -383,6 +383,9 @@ main.print-page { padding-bottom: 72px; }
 }
 .sheet3d.ink { mix-blend-mode: multiply; box-shadow: none; }
 .stack3d.open { transform: translateX(-38%); }
+.stack3d.is-wide { height: auto; width: 56%; max-width: none; }
+.stack3d[style*="--n:5"] { --gap: 66px; }
+.pp-est { font-size: 11px; }
 .stack3d.open .sheet3d {
   transform: rotateX(var(--rx)) rotateZ(var(--rz)) translateZ(calc((var(--i) - (var(--n) - 1) / 2) * var(--gap)));
   transition-delay: calc(var(--i) * 70ms);
@@ -464,6 +467,7 @@ main.print-page { padding-bottom: 72px; }
   .pp-view { inset: 28px 24px 40px; }
   .pp-text { position: static; }
   .stack3d { --gap: 40px; height: 74%; max-width: 60%; }
+  .stack3d.is-wide { width: 72%; }
   .stack3d.open { transform: none; }
   .s3-labels { display: none; }
   .byink { gap: 0 8px; }
