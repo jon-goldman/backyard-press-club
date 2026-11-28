@@ -290,26 +290,26 @@
       toggles.forEach(function (t) { t.setAttribute('aria-pressed', String(t.getAttribute('data-view') === view)); });
       if (view === 'list') {
         out.innerHTML =
-          '<div class="cat-scroll"><div class="cat-list" role="table" aria-label="All works">' +
-            '<div class="cat-row head" role="row"><span role="columnheader">No.</span><span role="columnheader"><span class="skip">Picture</span></span><span role="columnheader">Title</span><span role="columnheader">Inks</span><span role="columnheader">Format</span><span role="columnheader" class="num">Year</span></div>' +
+          '<div class="cat-scroll"><div class="cat-list">' +
+            '<div class="cat-row head" aria-hidden="true"><span>No.</span><span></span><span>Title</span><span>Inks</span><span>Format</span><span class="num">Year</span></div>' +
             WORKS.map(function (w, i) {
-              return '<button type="button" class="cat-row" role="row" data-work="' + i + '">' +
-                '<span class="mono mute" role="cell">' + esc(w.no) + '</span>' +
-                '<span class="thumb" role="cell">' + sheet(w, i, { noDetail: true }) + '</span>' +
-                '<span class="display t" role="cell">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (isSold(w) ? ' <span class="status">Sold out</span>' : '') + '</span>' +
-                '<span role="cell">' + (w.inks.length ? esc(w.inks.join(', ')) : '<span class="mute">[Inks]</span>') + '</span>' +
-                '<span role="cell" style="color:#333">' + esc(w.type) + '</span>' +
-                '<span role="cell" class="num">' + esc(w.year) + '</span>' +
-              '</button>';
+              return '<a class="cat-row" href="' + pageUrl(w) + '">' +
+                '<span class="mono mute">' + esc(w.no) + '</span>' +
+                '<span class="thumb">' + sheet(w, i, { noDetail: true }) + '</span>' +
+                '<span class="display t">' + esc(w.title) + (w.colorway ? ' <span class="mute" style="font-weight:400">' + esc(w.colorway) + '</span>' : '') + (isSold(w) ? ' <span class="status">Sold out</span>' : '') + '</span>' +
+                '<span class="ci">' + (w.inks.length ? esc(w.inks.join(', ')) : '<span class="mute">[Inks]</span>') + '</span>' +
+                '<span class="cf">' + esc(w.type) + '</span>' +
+                '<span class="num cy">' + esc(w.year) + '</span>' +
+              '</a>';
             }).join('') +
           '</div></div>';
       } else {
         out.innerHTML = '<div class="cat-grid">' + WORKS.map(function (w, i) {
-          return '<button type="button" class="work' + (isSold(w) ? ' is-sold' : '') + '" data-work="' + i + '">' +
+          return '<a class="work' + (isSold(w) ? ' is-sold' : '') + '" href="' + pageUrl(w) + '">' +
             '<span class="mat' + (w.image ? ' has-photo' : '') + '">' + picture(w, i) + '</span>' +
             '<span class="meta"><span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
             '<span class="display">' + esc(w.title) + '</span>' + statusLabel(w) + '</span>' +
-          '</button>';
+          '</a>';
         }).join('') + '</div>';
       }
     }
@@ -317,10 +317,6 @@
       t.addEventListener('click', function () { view = t.getAttribute('data-view'); store('bpc-view', view); draw(); });
     });
     draw();
-    out.addEventListener('click', function (e) {
-      var el = e.target.closest('[data-work]');
-      if (el) location.href = pageUrl(WORKS[Number(el.getAttribute('data-work'))]);
-    });
   }
 
   /* ---------- Ink picker (Riso printing page) ---------- */
@@ -336,7 +332,8 @@
       chips.innerHTML = names.map(function (n, i) {
         return '<button type="button" class="chip" aria-pressed="' + (picked.indexOf(i) !== -1) + '" data-i="' + i + '">' +
           '<span class="dot" style="background:' + INKS[n] + '" aria-hidden="true"></span>' +
-          '<span>' + esc(n) + '</span></button>';
+          '<span>' + esc(n) + '</span>' +
+          '<span class="pass mono">' + (picked[0] === i ? '1st pass' : picked[1] === i ? '2nd pass' : '') + '</span></button>';
       }).join('');
       s1.style.background = INKS[names[picked[0]]];
       s2.style.background = INKS[names[picked[1]]];

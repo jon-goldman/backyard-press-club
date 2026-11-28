@@ -479,3 +479,59 @@ img.ld { opacity: 0; }
 img.ld-in { transition: opacity .5s ease; }
 @media (prefers-reduced-motion: reduce) { img.ld-in { transition: none; } }
 .ink-col { flex: 1 1 400px; min-width: 0; }
+
+/* Text pages, round 3 (Nov 28): About, Riso printing, Catalogue, Thanks, 404, signup, phones.
+   Kept in one block so it rebases cleanly against the shop and print-page work. */
+
+/* Links inside running copy are underlined, so they read as links without colour. */
+.intro p a:not(.link-under), .split .copy p a:not(.link-under), .facts dd a {
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
+}
+.intro .links { display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; }
+
+/* Section heads (Sending files, Our inks) sit on the same two columns as the rest of the page. */
+@media (min-width: 961px) {
+  .section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 72px; align-items: baseline; justify-content: stretch; }
+}
+
+/* Ink picker: the picked inks say which pass they are. */
+.chip .pass { min-height: 14px; font-size: 10px; color: var(--ink); line-height: 1.2; }
+
+/* Catalogue rows are plain links now (open in a new tab works). */
+.cat-row, .cat-row:hover, .cat-grid .work, .cat-grid .work:hover { color: var(--ink); }
+.cat-row .cf { color: #333; }
+
+/* Email signup: placement in the footer belongs to the footer work (PR 19); only the field changes here. */
+/* The field's edge passes 3:1 against white (WCAG non-text contrast). */
+.signup input { border-color: #8c8c8c; }
+
+/* Phones */
+@media (max-width: 720px) {
+  .facts { grid-template-columns: 96px minmax(0, 1fr); }
+  .split h2, .section-head h2 { font-size: 28px; }
+  /* Steps: number beside the text instead of above it. */
+  .steps { gap: 28px; }
+  .steps li { display: grid; grid-template-columns: 36px minmax(0, 1fr); column-gap: 12px; row-gap: 6px; }
+  .steps .n { grid-row: 1 / span 2; font-size: 28px; }
+  /* Ink picker: the overprint sits above the chips, so a tap shows its result on screen. */
+  .inks { gap: 28px; }
+  .overprint { order: -1; flex-basis: 100%; }
+  .overprint .frame { padding: 24px; }
+  .overprint .sheet { width: 168px; }
+  .ink-chips { gap: 12px 8px; }
+  /* Catalogue list: one compact row per work, no sideways scroll. */
+  .cat-scroll { overflow: visible; }
+  .cat-list { min-width: 0; }
+  .cat-row.head { display: none; }
+  .cat-row {
+    grid-template-columns: 56px minmax(0, 1fr) auto; column-gap: 16px; row-gap: 2px;
+    grid-template-areas: "th no yr" "th t t" "th f f"; align-items: start; padding: 14px 0;
+  }
+  .cat-row > :nth-child(1) { grid-area: no; }
+  .cat-row > .thumb { grid-area: th; align-self: center; }
+  .cat-row > .t { grid-area: t; font-size: 17px; }
+  .cat-row > .ci { display: none; }
+  .cat-row > .cf { grid-area: f; font-size: 14px; color: var(--mute); }
+  .cat-row > .cy { grid-area: yr; font-family: var(--mono); font-size: 12px; color: var(--mute); }
+  .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 16px; padding-top: 28px; }
+}
