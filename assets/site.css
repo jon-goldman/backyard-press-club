@@ -509,6 +509,7 @@ img.ld-in { transition: opacity .5s ease; }
 @media (max-width: 960px) {
   .set-card { height: 110px; }
   .set-card img { max-width: min(100%, 110px); max-height: 110px; }
+}
 
 /* Text pages, round 3 (Nov 28): About, Riso printing, Catalogue, Thanks, 404, signup, phones.
    Kept in one block so it rebases cleanly against the shop and print-page work. */
