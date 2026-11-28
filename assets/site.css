@@ -13,6 +13,12 @@
   --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --wrap: 1200px;
   --gutter: 48px;
+  /* Shared scale (Nov 28). Use these for new rules instead of raw px.
+     Type: 12 labels (mono) / 14 small / 15 body / 17 lead / 20 large / 32 section / 52 page title. */
+  --t-label: 12px; --t-small: 14px; --t-body: 15px; --t-lead: 17px; --t-large: 20px; --t-section: 32px;
+  --t-title: clamp(36px, 5vw, 52px);
+  /* Space: steps at least 25% apart. Gap inside an item < gap between items. */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 72px; --s-9: 96px;
   color-scheme: light;
 }
 
@@ -46,7 +52,7 @@ button { font: inherit; color: inherit; }
 
 /* Design polish, Nov 28: plain grotesk at normal width (Jon: the wide grotesk was the wrong direction). */
 .display { font-family: var(--display); font-weight: 600; font-stretch: 100%; letter-spacing: -.02em; text-wrap: balance; }
-.mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
+.mono { font-family: var(--mono); font-size: var(--t-label); letter-spacing: 0; }
 .mute { color: var(--mute); }
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 16px; top: 16px; background: var(--paper); padding: 8px 12px; z-index: 20; }
@@ -59,8 +65,8 @@ button { font: inherit; color: inherit; }
   padding-bottom: 14px; border-bottom: 1px solid var(--ink);
 }
 .brand { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.brand span { font-size: 19px; line-height: 1; }
-.nav { display: flex; flex-wrap: wrap; gap: 0 28px; font-size: 15px; }
+.brand span { font-size: var(--t-large); line-height: 1; }
+.nav { display: flex; flex-wrap: wrap; gap: 0 var(--s-6); font-size: var(--t-body); }
 .nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; color: var(--ink); }
 .nav a:hover { color: var(--mute); }
 .nav a[aria-current="page"] { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
@@ -238,11 +244,11 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .facts dd { margin: 0; color: var(--ink); }
 
 /* Footer */
-.site-footer .wrap { padding-block: 0 48px; }
+.site-footer .wrap { padding-block: 0 var(--s-7); }
 .site-footer .bar { border-top: 1px solid var(--ink); padding-top: 20px; display: flex; flex-wrap: wrap; gap: 12px 40px; justify-content: space-between; align-items: baseline; }
-.site-footer .bar > span:first-child { font-size: 16px; }
-.site-footer nav { display: flex; flex-wrap: wrap; gap: 0 20px; }
-.site-footer nav a { color: var(--ink); font-family: var(--mono); font-size: 12px; min-height: 32px; display: inline-flex; align-items: center; }
+.site-footer .bar > span:first-child { font-size: var(--t-body); }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 0 var(--s-5); }
+.site-footer nav a { color: var(--ink); font-family: var(--mono); font-size: var(--t-label); min-height: 32px; display: inline-flex; align-items: center; }
 
 .empty { padding: 48px 0; color: var(--mute); }
 
@@ -488,7 +494,7 @@ img.ld-in { transition: opacity .5s ease; }
 .index-row .dots { display: inline-flex; gap: 3px; flex: none; transform: translateY(-1px); }
 .index-row .dots i { width: 8px; height: 8px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px rgba(17,17,17,.12); }
 /* Footer: signup and links share one ruled block, on the same two-column line as the text pages. */
-.site-footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 72px; row-gap: 28px; align-items: end; }
+.site-footer .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--s-8); row-gap: var(--s-6); align-items: end; }
 .site-footer .wrap::before { content: ""; grid-column: 1 / -1; border-top: 1px solid var(--ink); }
 .site-footer .signup.foot { margin: 0; }
 .site-footer .bar { border-top: 0; padding-top: 0; flex-direction: column; align-items: flex-start; gap: 10px; justify-content: flex-end; }
@@ -502,7 +508,7 @@ img.ld-in { transition: opacity .5s ease; }
   .nav { gap: 0 22px; }
 }
 /* Index column labels at the same 12px mono as the numbers. */
-.index-row.head { font-size: 12px; }
+.index-row.head { font-size: var(--t-label); }
 /* Postcard set: every card at the same physical size, upright or sideways. */
 .set-card { height: 200px; }
 .set-card img { max-width: min(100%, 200px); max-height: 200px; }
