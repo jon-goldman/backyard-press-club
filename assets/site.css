@@ -459,3 +459,23 @@ main.print-page { padding-bottom: 72px; }
 }
 
 .nw { white-space: nowrap; }
+
+/* Design polish 2 (Nov 28, Jon: "Let's keep going"). One column line for every
+   text page: heading on the left half, copy on the right half, rule on top. */
+@media (min-width: 961px) {
+  .intro, .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 72px; }
+  .intro { align-items: start; }
+  .intro .side { padding-top: 2px; }
+  .inks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 72px; align-items: start; }
+  .overprint { max-width: 420px; }
+}
+.section-head { border-bottom: 0; border-top: 1px solid var(--ink); padding: 24px 0 0; margin-bottom: 40px; }
+.ink-chips { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 420px; justify-self: start; }
+/* Print page: whichever column is shorter stays in view. */
+.pp-fig { position: sticky; top: 24px; }
+@media (max-width: 960px) { .pp-fig { position: static; } }
+/* Images fade in once loaded instead of popping in. */
+img.ld { opacity: 0; }
+img.ld-in { transition: opacity .5s ease; }
+@media (prefers-reduced-motion: reduce) { img.ld-in { transition: none; } }
+.ink-col { flex: 1 1 400px; min-width: 0; }
