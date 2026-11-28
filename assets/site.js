@@ -90,8 +90,6 @@
     return dialog;
   }
 
-  // Buy buttons: one Stripe Payment Link for the unframed print (w.buy), and a
-  // second for framed (w.buyFramed, pickup in Brooklyn) when the work is offered framed.
   // Formats (Nov 28, Jon approved): one page per artwork, with a picker when it comes in more
   // than one format (Print, Postcard, Framed). Each format has its own Stripe Payment Link.
   //   w.buy / w.price / w.size   the work's own format (its type: Print or Postcard)
@@ -100,6 +98,7 @@
   function formatsOf(w) {
     var out = [{ label: w.type, size: w.size, price: w.price, buy: w.buy, ship: true }];
     (w.alsoAs || []).forEach(function (f) { out.push({ label: f.label, size: f.size, price: f.price, buy: f.buy, ship: true }); });
+    out.forEach(function (f) { f.freeShip = f.label === 'Postcard'; });   // postcard links charge no shipping
     if (w.framed) out.push({ label: 'Framed', size: 'Pickup in Brooklyn', price: w.framed, buy: w.buyFramed, ship: false });
     return out;
   }
@@ -111,7 +110,7 @@
   }
   function buyNote(f) {
     if (!f.buy) return 'Checkout opens soon.';
-    return 'Secure checkout with Stripe. ' + (f.ship ? 'Ships in the US, $8 flat.' : 'Framed prints are pickup in Brooklyn.');
+    return 'Secure checkout with Stripe. ' + (!f.ship ? 'Framed prints are pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : 'Ships in the US, $8 flat.');
   }
   function buyButton(f) {
     return f.buy

@@ -69,21 +69,21 @@ window.BPC_WORKS = [
     image: 'images/matador.jpg', photo: 'images/photos/matador.jpg', detail: 'images/matador-detail.jpg', buy: 'https://buy.stripe.com/cNi6oHaU26SifbXcmb4Rq08',
     about: 'A mid-century photograph of a bullfight in Spain from a family archive, last printed in 2003. Three matadors work three bulls in front of a full stand; the seams of the old scan are left in on purpose.' },
   { no: 'BPC–006', title: 'Water Stone Gradient', type: 'Postcard', inks: ['Fluorescent Pink', 'Black', 'Blue', 'Sunflower'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/water-stone-gradient.jpg', detail: '', buy: '', about: 'A narrow cove between two cliffs, the water turning from deep blue to pale green over the stones.' },
+    image: 'images/water-stone-gradient.jpg', detail: '', buy: 'https://buy.stripe.com/3cI5kDaU2b8yd3P85V4Rq0i', about: 'A narrow cove between two cliffs, the water turning from deep blue to pale green over the stones.' },
   { no: 'BPC–007', title: 'Sparkle', type: 'Postcard', inks: ['Aqua', 'Blue'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/sparkle.jpg', detail: '', buy: '', about: 'Sunlight catching on dark open water, the highlights left as bare paper.' },
+    image: 'images/sparkle.jpg', detail: '', buy: 'https://buy.stripe.com/00wcN5faiekKd3P99Z4Rq0j', about: 'Sunlight catching on dark open water, the highlights left as bare paper.' },
   { no: 'BPC–008', title: 'Seeing Through Trees', type: 'Postcard', inks: ['Sunflower', 'Fluorescent Pink', 'Blue', 'Black'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/seeing-through-trees.jpg', detail: '', buy: '', about: 'A lake at dusk through a gap in the pines, with the film camera’s date stamp still in the corner.' },
+    image: 'images/seeing-through-trees.jpg', detail: '', buy: 'https://buy.stripe.com/fZu14ne6e6Si5Bn5XN4Rq0k', about: 'A lake at dusk through a gap in the pines, with the film camera’s date stamp still in the corner.' },
   { no: 'BPC–009', title: 'Rainbowburn', type: 'Postcard', inks: ['Aqua', 'Scarlet', 'Sunflower', 'Violet'], size: '6 × 4 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/rainbowburn.jpg', detail: '', buy: '', about: 'The Golden Gate Bridge from across the bay, with a light leak burning orange and pink across one side of the frame.' },
+    image: 'images/rainbowburn.jpg', detail: '', buy: 'https://buy.stripe.com/7sY8wP7HQa4ugg1fyn4Rq0l', about: 'The Golden Gate Bridge from across the bay, with a light leak burning orange and pink across one side of the frame.' },
   { no: 'BPC–010', title: 'Flowers Up', type: 'Postcard', inks: ['Fluorescent Pink', 'Black', 'Blue', 'Sunflower'], size: '6 × 4 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/flowers-up.jpg', detail: '', buy: '', about: 'Looking straight up into a tree in full blossom, the branches dark against a pale sky.' },
+    image: 'images/flowers-up.jpg', detail: '', buy: 'https://buy.stripe.com/7sY5kD8LUfoOgg10Dt4Rq0m', about: 'Looking straight up into a tree in full blossom, the branches dark against a pale sky.' },
   { no: 'BPC–011', title: 'Foliage', type: 'Print', inks: ['Scarlet', 'Purple'], size: '5.5 × 8.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: 'https://buy.stripe.com/3cIaEX1js1xYaVH85V4Rq0e', about: 'Fallen petals filling the frame, from a 2019 photograph. Printed in two inks, Purple over Scarlet.' },
   { no: 'BPC–012', title: 'Flowers 4', type: 'Print', inks: ['Aqua', 'Scarlet', 'Sunflower', 'Violet'], size: '8.5 × 5.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/flowers-4.jpg', detail: '', buy: 'https://buy.stripe.com/3cIfZh9PYa4u8Nzfyn4Rq0f', about: 'White flowers laid over a burst of red, violet and blue.' },
   { no: 'BPC–013', title: 'Dark Water', type: 'Postcard', inks: ['Sunflower', 'Fluorescent Pink', 'Blue', 'Black'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
-    image: 'images/dark-water.jpg', detail: '', buy: '', about: 'Evening water, almost black, with the last of the light picked out along the ripples.' },
+    image: 'images/dark-water.jpg', detail: '', buy: 'https://buy.stripe.com/28E5kDfaidgGbZLgCr4Rq0n', about: 'Evening water, almost black, with the last of the light picked out along the ripples.' },
   { no: 'BPC–014', title: 'Blue Water', type: 'Print', inks: ['Aqua', 'Cornflower', 'Kelly Green'], size: '11 × 17 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/blue-water.jpg', detail: '', buy: 'https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h', about: 'Sunlight netting across the floor of a pool, in Aqua, Cornflower and Kelly Green.' }
 ];
@@ -95,5 +95,5 @@ window.BPC_SETS = [
   { id: 'postcard-set', title: 'Postcard set', price: '$36',
     items: ['BPC–006', 'BPC–007', 'BPC–008', 'BPC–009', 'BPC–010', 'BPC–013'],
     about: 'All six postcards, one of each, with free shipping in the US.',
-    buy: '' }
+    buy: 'https://buy.stripe.com/9B6fZh5zI3G6gg12LB4Rq0o' }
 ];
