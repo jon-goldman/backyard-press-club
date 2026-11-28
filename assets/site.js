@@ -101,7 +101,7 @@
     }
     var note = (w.buy || w.buyFramed)
       ? 'Secure checkout with Stripe. Ships in the US, $8 flat.' + (w.framed ? ' Framed prints are pickup in Brooklyn.' : '')
-      : '[Checkout link coming soon]';
+      : 'Checkout opens soon.';
     return out + '<span class="mono mute">' + note + '</span>';
   }
 
