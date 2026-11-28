@@ -110,7 +110,7 @@
   }
   function buyNote(f) {
     if (!f.buy) return 'Checkout opens soon.';
-    return (!f.ship ? 'Pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : 'Ships in the US, $8 flat.') + ' Secure checkout with Stripe.';
+    return (!f.ship ? 'Pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : '$8 flat shipping in the US.') + ' Checkout by Stripe.';
   }
   function buyButton(f) {
     return f.buy
@@ -451,7 +451,7 @@
           '</div>' : '') +
         '</div>' +
         '<div class="pp-text">' +
-          '<p class="kicker mono mute"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + '</p>' +
+          '<p class="kicker mono mute"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + ' · ' + esc(w.year) + '</p>' +
           '<h1 class="display">' + esc(w.title) + '</h1>' +
           (w.colorway ? '<div class="ways"><p class="by">' + esc(w.colorway) + '</p>' + (ways.length > 1 ? '<nav class="way-list" aria-label="Colourways">' + ways.map(function (j) {
             var x = WORKS[j];
@@ -464,7 +464,6 @@
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
             '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
-            '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
         '</div>' +
