@@ -44,7 +44,8 @@ button { font: inherit; color: inherit; }
   :root { --gutter: 20px; }
 }
 
-.display { font-family: var(--display); font-weight: 600; font-stretch: 112%; letter-spacing: -.015em; text-wrap: balance; }
+/* Design polish, Nov 28: plain grotesk at normal width (Jon: the wide grotesk was the wrong direction). */
+.display { font-family: var(--display); font-weight: 600; font-stretch: 100%; letter-spacing: -.02em; text-wrap: balance; }
 .mono { font-family: var(--mono); font-size: 12px; letter-spacing: 0; }
 .mute { color: var(--mute); }
 .skip { position: absolute; left: -9999px; }
@@ -58,8 +59,7 @@ button { font: inherit; color: inherit; }
   padding-bottom: 14px; border-bottom: 1px solid var(--ink);
 }
 .brand { display: flex; align-items: center; gap: 12px; min-height: 44px; }
-.brand svg circle { mix-blend-mode: multiply; }
-.brand span { font-size: 20px; line-height: 1; }
+.brand span { font-size: 19px; line-height: 1; }
 .nav { display: flex; flex-wrap: wrap; gap: 0 28px; font-size: 15px; }
 .nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 2px; color: var(--ink); }
 .nav a:hover { color: var(--mute); }
@@ -75,7 +75,7 @@ main.wrap { padding-block: 64px 112px; }
   margin-bottom: 64px;
 }
 .intro .head { flex: 1 1 520px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.intro h1 { margin: 0; font-size: clamp(38px, 6vw, 56px); line-height: 1.02; }
+.intro h1 { margin: 0; font-size: clamp(36px, 5vw, 52px); line-height: 1.02; }
 .intro .side { flex: 0 1 360px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 6px; min-width: 0; }
 .intro p { margin: 0; font-size: 17px; line-height: 1.5; }
 
@@ -147,16 +147,16 @@ main.wrap { padding-block: 64px 112px; }
 .cat-list { min-width: 760px; }
 .cat-row {
   display: grid; grid-template-columns: 96px 56px minmax(0, 1fr) 180px 100px 72px; gap: 24px; align-items: center;
-  width: 100%; padding: 14px 0; border: 0; border-bottom: 1px solid var(--rule);
+  width: 100%; padding: 10px 0; border: 0; border-bottom: 1px solid var(--rule);
   background: none; text-align: left; cursor: pointer; transition: background .25s;
 }
 .cat-row:hover { background: rgba(17,17,17,.035); }
-.cat-row.head { cursor: default; padding: 12px 0; font-family: var(--mono); font-size: 11px; color: var(--mute); }
+.cat-row.head { cursor: default; padding: 12px 0; font-family: var(--mono); font-size: 12px; color: var(--mute); }
 .cat-row.head:hover { background: none; }
-.cat-row .t { font-size: 20px; line-height: 1.15; transition: color .25s; }
+.cat-row .t { font-size: 18px; line-height: 1.2; transition: color .25s; }
 .cat-row:hover .t { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .cat-row .num { text-align: right; font-variant-numeric: tabular-nums; }
-.thumb { width: 56px; height: 70px; background: var(--mat); display: flex; align-items: center; justify-content: center; }
+.thumb { width: 56px; height: 56px; background: var(--mat); display: flex; align-items: center; justify-content: center; }
 .thumb .sheet { width: 70%; box-shadow: 0 6px 12px -10px rgba(17,17,17,.6); }
 .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 48px 28px; padding-top: 40px; }
 .cat-grid .work .sheet { width: 64%; }
@@ -181,7 +181,7 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .ql h2 .by { color: var(--mute); font-weight: 400; }
 .ql p { margin: 0; font-size: 15px; line-height: 1.6; color: #333; }
 .ql dl { margin: 0; display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px 16px; font-size: 14px; border-top: 1px solid var(--rule); padding-top: 16px; }
-.ql dt { font-family: var(--mono); font-size: 11px; color: var(--mute); padding-top: 2px; }
+.ql dt { font-family: var(--mono); font-size: 12px; color: var(--mute); padding-top: 2px; }
 .ql dd { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
 .ql dd .ink { display: inline-flex; align-items: center; gap: 6px; }
 .ql dd .ink i { width: 10px; height: 10px; border-radius: 50%; display: block; }
@@ -234,7 +234,7 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .split .copy { flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 16px; font-size: 15px; line-height: 1.6; color: #333; }
 .split .copy p { margin: 0; }
 .facts { margin: 0; display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 10px 16px; }
-.facts dt { font-family: var(--mono); font-size: 11px; color: var(--mute); padding-top: 3px; }
+.facts dt { font-family: var(--mono); font-size: 12px; color: var(--mute); padding-top: 2px; }
 .facts dd { margin: 0; color: var(--ink); }
 
 /* Footer */
@@ -328,16 +328,19 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .plate:hover .photo img, .plate:focus-visible .photo img,
 .work:hover .photo img, .work:focus-visible .photo img { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 24px 34px -22px rgba(17,17,17,.5); }
 @media (prefers-reduced-motion: reduce) { .photo img { transition: none; } .plate:hover .photo img, .work:hover .photo img { transform: none; } }
-.plate.has-photo { padding: 40px 40px 64px; }
-.plate.has-photo .photo img { max-height: calc(max(560px, calc(100vh - 24px)) - 112px); width: auto; }
+/* Real scale (Nov 28): each print is drawn in proportion to its paper size, so a 4 × 6 postcard reads
+   smaller than an 11 × 17 print. --s is the long side over 17 in, set by the shop script. */
+.plate.has-photo { height: auto; min-height: 0; padding: 72px 40px 72px; }
+.plate.has-photo .photo img { max-height: calc((100vh - 200px) * var(--s, 1)); max-width: calc(80% * var(--s, 1) + 20%); width: auto; }
 .mat.has-photo { position: relative; }
 .mat.has-photo .photo { position: absolute; inset: 24px; display: flex; align-items: center; justify-content: center; }
 .mat.has-photo .photo img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
 .ql .pic.has-photo { padding: 32px; }
 .ql .pic.has-photo .photo img { max-height: 70vh; width: auto; }
 @media (max-width: 960px) {
-  .plate.has-photo { aspect-ratio: auto; padding: 20px 16px 64px; }
-  .plate.has-photo .photo img { max-height: 80vh; }
+  .plate.has-photo { aspect-ratio: auto; padding: 32px 16px 14px; }
+  .plate.has-photo .photo { width: 100%; display: flex; justify-content: center; }
+  .plate.has-photo .photo img { max-height: calc(70vh * (.3 + .7 * var(--s, 1))); max-width: calc(100% * (.4 + .6 * var(--s, 1))); }
 }
 .work:hover .display, .work:focus-visible .display { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
@@ -346,7 +349,9 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .crumbs { margin: 0 0 24px; }
 .crumbs a { color: var(--mute); }
 .pp { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 56px; align-items: start; }
-.pp-stage { background: var(--mat); height: min(80vh, 860px); min-height: 480px; position: relative; }
+.pp-stage { background: var(--mat); height: min(74vh, 780px); min-height: 480px; position: relative; }
+/* Design polish (Nov 28, Jon: stay focused on the design): smaller pieces sit smaller on the mat, as on the shop. */
+.pp-view[data-v="print"] .pp-img img { max-width: calc(100% * (.45 + .55 * var(--s, 1))); max-height: calc(100% * (.45 + .55 * var(--s, 1))); }
 .pp-view { position: absolute; inset: 48px; display: flex; align-items: center; justify-content: center; }
 .pp-view[hidden] { display: none; }
 .pp-img { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
@@ -384,13 +389,15 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 .inklist .ink { display: inline-flex; align-items: center; gap: 6px; }
 .inklist .ink i { width: 10px; height: 10px; border-radius: 50%; display: block; }
 .pp-buy { display: flex; flex-direction: column; gap: 10px; }
+.pp-buy .mono { text-wrap: pretty; }
+main.print-page { padding-bottom: 72px; }
 .pp-sibs { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--rule); padding-top: 16px; }
 .sib { display: flex; align-items: center; gap: 14px; }
 .sib-img { width: 56px; height: 70px; background: var(--mat); display: flex; align-items: center; justify-content: center; flex: none; }
 .sib-img img { max-width: 70%; max-height: 80%; }
 .sib .display { font-size: 15px; transition: color .3s; }
 .sib:hover .display { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.pp-pager { display: flex; justify-content: space-between; gap: 24px; margin-top: 72px; border-top: 1px solid var(--ink); padding-top: 18px; }
+.pp-pager { display: flex; justify-content: space-between; gap: 24px; margin-top: 56px; border-top: 1px solid var(--ink); padding-top: 18px; }
 .pp-pager a { display: flex; flex-direction: column; gap: 4px; }
 .pp-pager a.nx { text-align: right; }
 .pp-pager .display { font-size: 18px; transition: color .3s; }
@@ -450,3 +457,5 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
   .set-cards { gap: 10px; }
   .set-card { height: 120px; }
 }
+
+.nw { white-space: nowrap; }

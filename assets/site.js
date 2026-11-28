@@ -195,6 +195,15 @@
     return 'tall';
   }
 
+  // Long side of the paper over 17 in (the largest sheet), for drawing prints to scale.
+  function scaleOf(w) {
+    var m = String(w.size).match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*in/);
+    if (!m) return 1;
+    // Softened so a postcard still reads as a picture: 4 × 6 in draws at about 0.55, 11 × 17 at 1.
+    var r = Math.min(1, Math.max(+m[1], +m[2]) / 17);
+    return (.3 + .7 * r).toFixed(2);
+  }
+
   function shop(root) {
     var index = root.querySelector('[data-index]');
     var prints = root.querySelector('[data-prints]');
@@ -213,10 +222,10 @@
 
     prints.innerHTML = order.map(function (i) {
       var w = WORKS[i], sold = isSold(w);
-      return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + (w.colorway ? ', ' + w.colorway : '') + (sold ? ', sold out' : ', ' + w.price)) + '">' +
+      return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" style="--s:' + scaleOf(w) + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + (w.colorway ? ', ' + w.colorway : '') + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
         '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (sold ? ' · Sold out' : (hasPostcard(w) && w.type !== 'Postcard' ? ' · Also as a postcard' : '')) + '</span>' +
-        '<span>' + esc(inksText(w)) + ' · ' + esc(w.size) + '</span></span>' +
+        '<span>' + esc(inksText(w)) + ' · <span class="nw">' + esc(w.size) + '</span></span></span>' +
       '</button>';
     }).join('');
 
@@ -391,7 +400,7 @@
       '<nav class="crumbs mono" aria-label="Breadcrumb"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span></nav>' +
       '<div class="pp">' +
         '<div class="pp-fig">' +
-          '<div class="pp-stage" data-stage>' +
+          '<div class="pp-stage" data-stage style="--s:' + scaleOf(w) + '">' +
             '<div class="pp-view" data-v="print"><span class="pp-img"><img src="' + esc(w.image) + '" alt="' + esc(w.title + (w.colorway ? ', ' + w.colorway : '') + ', scan of the print') + '"></span></div>' +
             (w.photo ? '<div class="pp-view" data-v="photo" hidden><span class="pp-img"><img src="' + esc(w.photo) + '" alt="' + esc(w.title + ', photographed') + '" loading="lazy"></span></div>' : '') +
             (layers ? '<div class="pp-view" data-v="inks" hidden>' + layers + '</div>' : '') +
