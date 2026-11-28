@@ -79,11 +79,11 @@ window.BPC_WORKS = [
   { no: 'BPC–010', title: 'Flowers Up', type: 'Postcard', inks: ['Fluorescent Pink', 'Black', 'Blue', 'Sunflower'], size: '6 × 4 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
     image: 'images/flowers-up.jpg', detail: '', buy: '', about: 'Looking straight up into a tree in full blossom, the branches dark against a pale sky.' },
   { no: 'BPC–011', title: 'Foliage', type: 'Print', inks: ['Scarlet', 'Purple'], size: '5.5 × 8.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
-    image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: 'https://buy.stripe.com/3cIaEX1js1xYaVH85V4Rq0e', about: 'Fallen petals filling the frame, from a 2019 photograph. Printed in two inks, Purple over Scarlet.' },
+    image: 'images/foliage.jpg', layers: ['images/layers/foliage-1.webp', 'images/layers/foliage-2.webp'], detail: '', buy: '' /* paused until printed: https://buy.stripe.com/3cIaEX1js1xYaVH85V4Rq0e */, about: 'Fallen petals filling the frame, from a 2019 photograph. Printed in two inks, Purple over Scarlet.' },
   { no: 'BPC–012', title: 'Flowers 4', type: 'Print', inks: ['Aqua', 'Scarlet', 'Sunflower', 'Violet'], size: '8.5 × 5.5 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
     image: 'images/flowers-4.jpg', detail: '', buy: 'https://buy.stripe.com/3cIfZh9PYa4u8Nzfyn4Rq0f', about: 'White flowers laid over a burst of red, violet and blue.' },
   { no: 'BPC–013', title: 'Dark Water', type: 'Postcard', inks: ['Sunflower', 'Fluorescent Pink', 'Blue', 'Black'], size: '4 × 6 in', pages: '', edition: '', paper: 'Speckletone, 80 lb', year: '2026', price: '$8', framed: '', status: 'available',
     image: 'images/dark-water.jpg', detail: '', buy: '', about: 'Evening water, almost black, with the last of the light picked out along the ripples.' },
   { no: 'BPC–014', title: 'Blue Water', type: 'Print', inks: ['Aqua', 'Cornflower', 'Kelly Green'], size: '11 × 17 in', pages: '', edition: '25', paper: 'Speckletone, 80 lb', year: '2026', price: '$45', framed: '', status: 'available',
-    image: 'images/blue-water.jpg', detail: '', buy: 'https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h', about: 'Sunlight netting across the floor of a pool, in Aqua, Cornflower and Kelly Green.' }
+    image: 'images/blue-water.jpg', detail: '', buy: '' /* paused until printed: https://buy.stripe.com/dRm6oHgem1xYgg11Hx4Rq0h */, about: 'Sunlight netting across the floor of a pool, in Aqua, Cornflower and Kelly Green.' }
 ];
