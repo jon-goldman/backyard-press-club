@@ -231,8 +231,10 @@
       var w = WORKS[i], sold = isSold(w);
       return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" style="--s:' + scaleOf(w) + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + (w.colorway ? ', ' + w.colorway : '') + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
-        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (sold ? ' · Sold out' : (hasPostcard(w) && w.type !== 'Postcard' ? ' · Also as a postcard' : '')) + '</span>' +
-        '<span>' + esc(inksText(w)) + ' · <span class="nw">' + esc(w.size) + '</span></span></span>' +
+        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (!sold && hasPostcard(w) && w.type !== 'Postcard' ? ' · Also as a postcard' : '') + '</span>' +
+        // Design polish 5 (Nov 28, Jon: clean and simple): the shop caption carries size and price;
+        // the inks live on the print's own page.
+        '<span><span class="nw">' + esc(w.size) + '</span> · ' + (sold ? 'Sold out' : esc(w.price)) + '</span></span>' +
       '</button>';
     }).join('');
 

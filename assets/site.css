@@ -246,7 +246,7 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 /* Footer */
 .site-footer .wrap { padding-block: 0 var(--s-7); }
 .site-footer .bar { border-top: 1px solid var(--ink); padding-top: 20px; display: flex; flex-wrap: wrap; gap: 12px 40px; justify-content: space-between; align-items: baseline; }
-.site-footer .bar > span:first-child { font-size: var(--t-body); }
+/* (tagline removed Nov 28: it repeated the home lede) */
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 0 var(--s-5); }
 .site-footer nav a { color: var(--ink); font-family: var(--mono); font-size: var(--t-label); min-height: 32px; display: inline-flex; align-items: center; }
 
@@ -616,3 +616,10 @@ img.ld-in { transition: opacity .5s ease; }
   .cat-row > .cy { grid-area: yr; font-family: var(--mono); font-size: 12px; color: var(--mute); }
   .cat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px 16px; padding-top: 28px; }
 }
+
+/* Design polish 5 (Nov 28, Jon: "clean, simple"). Shop index without column labels:
+   one rule on top, rows speak for themselves. */
+.split-side .index { border-top: 1px solid var(--ink); }
+/* Design polish 6: the shop lede is one plain sentence (the nav already links Riso printing);
+   a little smaller on phones so the first print shows sooner. */
+@media (max-width: 720px) { .lede { font-size: var(--t-lead); } }
