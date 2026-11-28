@@ -29,6 +29,8 @@ The signup in the footer posts to a free Kit form (kit.com, free up to 10,000 su
 2. Copy the form's number from its embed code (`app.kit.com/forms/1234567/...`).
 3. Paste it into `BPC_SIGNUP_FORM` in `assets/works.js`. Until then the form shows as "coming soon".
 
+Connected Nov 28 to the Backyard Press Club Kit account, form 10253741. Kit sends each new subscriber a confirmation email; the subscriber list is in Kit under Grow → Subscribers.
+
 ## Your own domain
 Once the domain is bought:
 1. Add a file named `CNAME` at the root containing just the domain, e.g. `backyardpressclub.com`.
