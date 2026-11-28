@@ -11,6 +11,9 @@
   });
   var INKS = window.BPC_INKS || {};
 
+  function editionText(w) {
+    return w.edition ? esc(w.edition) + ', signed and numbered' : 'Open run, unsigned';
+  }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -87,23 +90,56 @@
     return dialog;
   }
 
-  // Buy buttons: one Stripe Payment Link for the unframed print (w.buy), and a
-  // second for framed (w.buyFramed, pickup in Brooklyn) when the work is offered framed.
+  // Formats (Nov 28, Jon approved): one page per artwork, with a picker when it comes in more
+  // than one format (Print, Postcard, Framed). Each format has its own Stripe Payment Link.
+  //   w.buy / w.price / w.size   the work's own format (its type: Print or Postcard)
+  //   w.framed / w.buyFramed     framed, pickup in Brooklyn
+  //   w.alsoAs                   more formats, e.g. [{ label: 'Postcard', size: '4 × 6 in', price: '$8', buy: '' }]
+  function formatsOf(w) {
+    var out = [{ label: w.type, size: w.size, price: w.price, buy: w.buy, ship: true }];
+    (w.alsoAs || []).forEach(function (f) { out.push({ label: f.label, size: f.size, price: f.price, buy: f.buy, ship: true }); });
+    out.forEach(function (f) { f.freeShip = f.label === 'Postcard'; });   // postcard links charge no shipping
+    if (w.framed) out.push({ label: 'Framed', size: 'Pickup in Brooklyn', price: w.framed, buy: w.buyFramed, ship: false });
+    return out;
+  }
+  function hasPostcard(w) { return formatsOf(w).some(function (f) { return f.label === 'Postcard'; }); }
+  function pricesText(w) {
+    var f = formatsOf(w);
+    if (f.length === 1) return esc(f[0].price);
+    return f.map(function (x) { return esc(x.label) + ' ' + esc(x.price); }).join(' · ');
+  }
+  function buyNote(f) {
+    if (!f.buy) return 'Checkout opens soon.';
+    return 'Secure checkout with Stripe. ' + (!f.ship ? 'Framed prints are pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : 'Ships in the US, $8 flat.');
+  }
+  function buyButton(f) {
+    return f.buy
+      ? '<a class="btn" data-buy href="' + esc(f.buy) + '" rel="noopener">Buy · ' + esc(f.price) + '</a>'
+      : '<span class="btn" data-buy aria-disabled="true">Buy · ' + esc(f.price) + '</span>';
+  }
   function buyButtons(w, sold, soldNote) {
     if (sold) return '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">' + esc(soldNote) + '</span>';
-    var out = w.buy
-      ? '<a class="btn" href="' + esc(w.buy) + '" rel="noopener">Buy · ' + esc(w.price) + '</a>'
-      : '<span class="btn" aria-disabled="true">Buy · ' + esc(w.price) + '</span>';
-    if (w.framed) {
-      out += w.buyFramed
-        ? '<a class="btn btn-line" href="' + esc(w.buyFramed) + '" rel="noopener">Buy framed · ' + esc(w.framed) + '</a>'
-        : '<span class="btn btn-line" aria-disabled="true">Buy framed · ' + esc(w.framed) + '</span>';
-    }
-    var note = (w.buy || w.buyFramed)
-      ? 'Secure checkout with Stripe. ' + (w.type === 'Postcard' ? 'Free US shipping.' : 'Ships in the US, $8 flat.') + (w.framed ? ' Framed prints are pickup in Brooklyn.' : '')
-      : 'Checkout opens soon.';
-    return out + '<span class="mono mute">' + note + '</span>';
+    var fs = formatsOf(w);
+    var picker = fs.length > 1
+      ? '<fieldset class="fmt"><legend class="mono mute">Format</legend>' + fs.map(function (f, k) {
+          return '<label class="fmt-opt"><input type="radio" name="fmt-' + slug(w.no) + '" value="' + k + '"' + (k === 0 ? ' checked' : '') + '>' +
+            '<span><strong>' + esc(f.label) + '</strong> <span class="mute">' + esc(f.size) + '</span></span><span class="fmt-p">' + esc(f.price) + '</span></label>';
+        }).join('') + '</fieldset>'
+      : '';
+    var set = (window.BPC_SETS || []).filter(function (x) { return x.items.indexOf(w.no) !== -1; })[0];
+    return '<div class="fmt-box" data-fmt-box="' + WORKS.indexOf(w) + '">' + picker + buyButton(fs[0]) +
+      '<span class="mono mute" data-buy-note>' + buyNote(fs[0]) + '</span>' +
+      (set ? '<a class="set-link" href="index.html#' + esc(set.id) + '">Or get all ' + set.items.length + ' in the ' + esc(set.title) + ', ' + esc(set.price) + ' with free US shipping</a>' : '') +
+    '</div>';
   }
+  document.addEventListener('change', function (e) {
+    var r = e.target.closest('.fmt input[type="radio"]');
+    if (!r) return;
+    var box = r.closest('[data-fmt-box]');
+    var f = formatsOf(WORKS[Number(box.getAttribute('data-fmt-box'))])[Number(r.value)];
+    box.querySelector('[data-buy]').outerHTML = buyButton(f);
+    box.querySelector('[data-buy-note]').textContent = buyNote(f);
+  });
 
   function openQuick(idx) {
     var w = WORKS[idx];
@@ -126,8 +162,8 @@
             }).join('') : '[Inks]') + '</dd>' +
             '<dt>Size</dt><dd>' + size + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered · ' + esc(w.year) + '</dd>' +
-            '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
+            '<dt>Edition</dt><dd>' + editionText(w) + ' · ' + esc(w.year) + '</dd>' +
+            (formatsOf(w).length > 1 ? '' : '<dt>Price</dt><dd>' + pricesText(w) + '</dd>') +
           '</dl>' +
           '<div class="buy">' + buy + '<a class="more" href="' + pageUrl(w) + '">See the full page</a></div>' +
         '</div>' +
@@ -179,10 +215,31 @@
       var w = WORKS[i], sold = isSold(w);
       return '<button type="button" class="plate ' + (w.image ? 'has-photo' : 'fmt-' + format(w)) + (sold ? ' is-sold' : '') + '" id="' + slug(w.no) + '-print" data-work="' + i + '" aria-label="' + esc(w.no + ', ' + w.title + (w.colorway ? ', ' + w.colorway : '') + (sold ? ', sold out' : ', ' + w.price)) + '">' +
         picture(w, i) +
-        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (sold ? ' · Sold out' : '') + '</span>' +
+        '<span class="cap"><span>' + esc(w.no) + ' · ' + esc(w.title) + (sold ? ' · Sold out' : (hasPostcard(w) && w.type !== 'Postcard' ? ' · Also as a postcard' : '')) + '</span>' +
         '<span>' + esc(inksText(w)) + ' · ' + esc(w.size) + '</span></span>' +
       '</button>';
     }).join('');
+
+    // Sets (Nov 28): one product made of several works, sold on one Stripe link.
+    (window.BPC_SETS || []).forEach(function (set) {
+      var items = set.items.map(function (no) { return WORKS.filter(function (w) { return w.no === no; })[0]; }).filter(Boolean);
+      prints.insertAdjacentHTML('beforeend',
+        '<section class="set-plate" id="' + esc(set.id) + '" aria-label="' + esc(set.title) + '">' +
+          '<div class="set-cards">' + items.map(function (w) {
+            return '<a class="set-card" href="' + pageUrl(w) + '" title="' + esc(w.title) + '"><img src="' + esc(w.image) + '" alt="' + esc(w.title) + '" loading="lazy"></a>';
+          }).join('') + '</div>' +
+          '<div class="set-text">' +
+            '<div><span class="mono mute">Set · ' + items.length + ' postcards</span><h2 class="display">' + esc(set.title) + '</h2>' +
+            '<p>' + esc(set.about) + '</p></div>' +
+            '<div class="set-buy">' + (set.buy
+              ? '<a class="btn" href="' + esc(set.buy) + '" rel="noopener">Buy the set · ' + esc(set.price) + '</a>'
+              : '<span class="btn" aria-disabled="true">Buy the set · ' + esc(set.price) + '</span>') +
+            '<span class="mono mute">' + (set.buy ? 'Secure checkout with Stripe. Free US shipping.' : 'Checkout opens soon. Free US shipping.') + '</span></div>' +
+          '</div>' +
+        '</section>');
+      index.insertAdjacentHTML('beforeend',
+        '<a role="listitem" class="index-row" href="#' + esc(set.id) + '"><span class="no">Set</span><span class="t">' + esc(set.title) + '</span><span class="p">' + esc(set.price) + '</span></a>');
+    });
 
     // Index rows scroll the right column to their print instead of jumping the page.
     index.addEventListener('click', function (e) {
@@ -355,9 +412,9 @@
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
             '<dt>Size</dt><dd>' + esc(w.size) + (w.pages ? ' · ' + esc(w.pages) : '') + '</dd>' +
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
-            '<dt>Edition</dt><dd>' + esc(w.edition) + ', signed and numbered' + '</dd>' +
+            '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
-            '<dt>Price</dt><dd>' + esc(w.price) + (w.framed ? ' unframed · ' + esc(w.framed) + ' framed (pickup in Brooklyn)' : '') + '</dd>' +
+            (formatsOf(w).length > 1 ? '' : '<dt>Price</dt><dd>' + pricesText(w) + '</dd>') +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
           (siblings.length ? '<div class="pp-sibs"><span class="mono mute">Also in this edition</span>' + siblings.map(function (j) {
