@@ -100,7 +100,7 @@
         : '<span class="btn btn-line" aria-disabled="true">Buy framed · ' + esc(w.framed) + '</span>';
     }
     var note = (w.buy || w.buyFramed)
-      ? 'Secure checkout with Stripe. Ships in the US, $8 flat.' + (w.framed ? ' Framed prints are pickup in Brooklyn.' : '')
+      ? 'Secure checkout with Stripe. ' + (w.type === 'Postcard' ? 'Free US shipping.' : 'Ships in the US, $8 flat.') + (w.framed ? ' Framed prints are pickup in Brooklyn.' : '')
       : 'Checkout opens soon.';
     return out + '<span class="mono mute">' + note + '</span>';
   }
