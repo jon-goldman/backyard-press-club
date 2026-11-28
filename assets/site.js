@@ -238,6 +238,10 @@
       '</button>';
     }).join('');
 
+    // The first print is the first thing anyone sees: load it right away (Nov 28).
+    var first = prints.querySelector('.plate img');
+    if (first) { first.loading = 'eager'; first.setAttribute('fetchpriority', 'high'); }
+
     // Sets (Nov 28): one product made of several works, sold on one Stripe link.
     (window.BPC_SETS || []).forEach(function (set) {
       var items = set.items.map(function (no) { return WORKS.filter(function (w) { return w.no === no; })[0]; }).filter(Boolean);
