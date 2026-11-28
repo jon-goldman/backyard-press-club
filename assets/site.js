@@ -110,33 +110,39 @@
   }
   function buyNote(f) {
     if (!f.buy) return 'Checkout opens soon.';
-    return 'Secure checkout with Stripe. ' + (!f.ship ? 'Framed prints are pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : 'Ships in the US, $8 flat.');
+    return (!f.ship ? 'Pickup in Brooklyn.' : f.freeShip ? 'Free US shipping.' : 'Ships in the US, $8 flat.') + ' Secure checkout with Stripe.';
   }
   function buyButton(f) {
     return f.buy
       ? '<a class="btn" data-buy href="' + esc(f.buy) + '" rel="noopener">Buy · ' + esc(f.price) + '</a>'
       : '<span class="btn" data-buy aria-disabled="true">Buy · ' + esc(f.price) + '</span>';
   }
+  // What the buy box offers: the work's formats, then the set it belongs to (if any),
+  // so a postcard's page can sell the card or the whole set from one picker.
+  function setOf(w) { return (window.BPC_SETS || []).filter(function (x) { return x.items.indexOf(w.no) !== -1; })[0]; }
+  function optionsOf(w) {
+    var out = formatsOf(w), set = setOf(w);
+    if (set) out.push({ label: set.title, size: 'All ' + set.items.length + ', one of each', price: set.price, buy: set.buy, ship: true, freeShip: true });
+    return out;
+  }
   function buyButtons(w, sold, soldNote) {
     if (sold) return '<span class="btn" aria-disabled="true">Sold out</span><span class="mono mute">' + esc(soldNote) + '</span>';
-    var fs = formatsOf(w);
+    var fs = optionsOf(w);
     var picker = fs.length > 1
       ? '<fieldset class="fmt"><legend class="mono mute">Format</legend>' + fs.map(function (f, k) {
           return '<label class="fmt-opt"><input type="radio" name="fmt-' + slug(w.no) + '" value="' + k + '"' + (k === 0 ? ' checked' : '') + '>' +
             '<span><strong>' + esc(f.label) + '</strong> <span class="mute">' + esc(f.size) + '</span></span><span class="fmt-p">' + esc(f.price) + '</span></label>';
         }).join('') + '</fieldset>'
       : '';
-    var set = (window.BPC_SETS || []).filter(function (x) { return x.items.indexOf(w.no) !== -1; })[0];
     return '<div class="fmt-box" data-fmt-box="' + WORKS.indexOf(w) + '">' + picker + buyButton(fs[0]) +
       '<span class="mono mute" data-buy-note>' + buyNote(fs[0]) + '</span>' +
-      (set ? '<a class="set-link" href="index.html#' + esc(set.id) + '">Or get all ' + set.items.length + ' in the ' + esc(set.title) + ', ' + esc(set.price) + ' with free US shipping</a>' : '') +
     '</div>';
   }
   document.addEventListener('change', function (e) {
     var r = e.target.closest('.fmt input[type="radio"]');
     if (!r) return;
     var box = r.closest('[data-fmt-box]');
-    var f = formatsOf(WORKS[Number(box.getAttribute('data-fmt-box'))])[Number(r.value)];
+    var f = optionsOf(WORKS[Number(box.getAttribute('data-fmt-box'))])[Number(r.value)];
     box.querySelector('[data-buy]').outerHTML = buyButton(f);
     box.querySelector('[data-buy-note]').textContent = buyNote(f);
   });
@@ -363,11 +369,13 @@
     for (var i = 0; i < WORKS.length; i++) if (slug(WORKS[i].no) === want) idx = i;
     if (idx === -1) { root.querySelector('[data-missing]').hidden = false; return; }
     var w = WORKS[idx], sold = isSold(w);
-    document.title = w.title + (w.colorway ? ', ' + w.colorway : '') + ' · Backyard Press Club';
+    var fullTitle = w.title + (w.colorway ? ', ' + w.colorway : '');
+    document.title = fullTitle + ' · Backyard Press Club';
 
+    var hasLayers = !!(w.layers && w.layers.length && w.layers.length === w.inks.length);
     var views = [{ key: 'print', label: 'Print' }];
     if (w.photo) views.push({ key: 'photo', label: 'Photo' });
-    if (w.layers && w.layers.length === w.inks.length && w.layers.length) views.push({ key: 'inks', label: 'Layers' });
+    if (hasLayers) views.push({ key: 'layers', label: 'Layers' }, { key: 'byink', label: 'Ink by ink' });
 
     var siblings = WORKS.map(function (x, j) { return j; }).filter(function (j) { return j !== idx && WORKS[j].title === w.title && WORKS[j].colorway; });
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
@@ -378,30 +386,60 @@
       return '<span class="ink"><i style="background:' + hex(n) + '" aria-hidden="true"></i>' + esc(n) + '</span>';
     }).join('') : '[Inks]';
 
-    // Layers: the paper at the bottom, one see-through sheet per ink in printing order.
-    // Pulled apart in 3D like the Drums view in Riso Studio (Jon, 11/27: "the earlier 3D layer view").
-    var PAPER_TONE = '#f2ebd0';   // Speckletone, the actual paper of the print
-    var layers = '', legend = '';
-    if (w.layers) {
-      layers = '<button type="button" class="stack3d" data-stack aria-label="Pull the inks apart or stack them back">' +
-        '<span class="sheet3d paper" style="background:' + PAPER_TONE + '"></span>' +
-        w.layers.map(function (src) { return '<img class="sheet3d ink" src="' + esc(src) + '" alt="">'; }).join('') +
-      '</button>';
+    // True relative size: the long side over 17 in (the largest sheet), softened only a little
+    // so a 4 × 6 in postcard still reads as a picture. 11 × 17 fills the mat.
+    var m = String(w.size).match(/([\d.]+)\s*[×x]\s*([\d.]+)\s*in/);
+    var real = m ? Math.min(1, Math.max(+m[1], +m[2]) / 17) : 1;
+    var fill = (.22 + .78 * real).toFixed(3);
+
+    // Layers: the paper at the bottom, one see-through sheet per ink in printing order,
+    // pulled apart in 3D like the Drums view in Riso Studio (Jon, 11/27: "the earlier 3D layer view").
+    var PAPER_TONE = '#f1eee6';   // Speckletone, lightened so it reads as paper rather than cream
+    var layersView = '', byInk = '', legend = '';
+    if (hasLayers) {
+      var sheets = [{ cls: 'paper', name: String(w.paper).split(',')[0], sub: 'Paper' }].concat(w.inks.map(function (n, k) {
+        return { cls: 'ink', name: n, sub: 'Pass ' + (k + 1), src: w.layers[k] };
+      }));
+      layersView =
+        '<button type="button" class="stack3d" data-stack style="--n:' + sheets.length + '" aria-label="Pull the inks apart or stack them back">' +
+          sheets.map(function (s, k) {
+            return s.src
+              ? '<img class="sheet3d ink" style="--i:' + k + '" src="' + esc(s.src) + '" alt="">'
+              : '<span class="sheet3d paper" style="--i:' + k + ';background:' + PAPER_TONE + '"></span>';
+          }).join('') +
+        '</button>' +
+        '<ol class="s3-labels" aria-hidden="true">' + sheets.map(function (s, k) {
+          return '<li data-label="' + k + '"><span class="mono mute">' + esc(s.sub) + '</span> ' + esc(s.name) + '</li>';
+        }).reverse().join('') + '</ol>';
       legend = '<div class="pp-legend" data-legend hidden>' +
-        '<span><i style="background:' + PAPER_TONE + '"></i>Paper, ' + esc(w.paper) + '</span>' +
-        w.inks.map(function (n, k) { return '<span><i style="background:' + hex(n) + '"></i>' + esc(n) + ' <span class="mute">pass ' + (k + 1) + '</span></span>'; }).join('') +
+        sheets.map(function (s, k) {
+          return '<button type="button" class="lg" data-focus="' + k + '"><i style="background:' + (s.src ? hex(s.name) : PAPER_TONE) + '"></i>' + esc(s.src ? s.name : 'Paper') +
+            (s.src ? ' <span class="mute">' + esc(s.sub.toLowerCase()) + '</span>' : '') + '</button>';
+        }).join('') +
         '<button type="button" class="pp-toggle" data-toggle>Stack</button>' +
+      '</div>';
+      // Ink by ink: each separation flat on its own sheet, then the finished print.
+      byInk = '<div class="byink" style="--cols:' + Array(w.inks.length + 1).join('minmax(0, 1fr) auto ') + 'minmax(0, 1fr)">' + w.inks.map(function (n, k) {
+        return (k ? '<span class="op" aria-hidden="true">+</span>' : '') +
+          '<figure><span class="bi-sheet" style="background:' + PAPER_TONE + '"><img src="' + esc(w.layers[k]) + '" alt="' + esc(n + ' layer') + '" loading="lazy"></span>' +
+          '<figcaption><span class="mono mute">' + (k + 1) + '</span> ' + esc(n) + '</figcaption></figure>';
+      }).join('') +
+        '<span class="op" aria-hidden="true">=</span>' +
+        '<figure><span class="bi-sheet"><img src="' + esc(w.image) + '" alt="" loading="lazy"></span><figcaption>The print</figcaption></figure>' +
       '</div>';
     }
 
+    function titleOf(x) { return esc(x.title) + (x.colorway ? '<span class="mute">, ' + esc(x.colorway) + '</span>' : ''); }
+
     root.innerHTML =
-      '<nav class="crumbs mono" aria-label="Breadcrumb"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span></nav>' +
       '<div class="pp">' +
         '<div class="pp-fig">' +
-          '<div class="pp-stage" data-stage style="--s:' + scaleOf(w) + '">' +
-            '<div class="pp-view" data-v="print"><span class="pp-img"><img src="' + esc(w.image) + '" alt="' + esc(w.title + (w.colorway ? ', ' + w.colorway : '') + ', scan of the print') + '"></span></div>' +
+          '<div class="pp-stage" data-stage data-on="print" style="--fill:' + fill + '">' +
+            '<div class="pp-view" data-v="print"><span class="pp-img"><img src="' + esc(w.image) + '" alt="' + esc(fullTitle + ', scan of the print') + '"></span></div>' +
             (w.photo ? '<div class="pp-view" data-v="photo" hidden><span class="pp-img"><img src="' + esc(w.photo) + '" alt="' + esc(w.title + ', photographed') + '" loading="lazy"></span></div>' : '') +
-            (layers ? '<div class="pp-view" data-v="inks" hidden>' + layers + '</div>' : '') +
+            (layersView ? '<div class="pp-view" data-v="layers" hidden>' + layersView + '</div>' : '') +
+            (byInk ? '<div class="pp-view" data-v="byink" hidden>' + byInk + '</div>' : '') +
+            '<span class="pp-scale mono mute" data-scale>' + esc(w.size) + ' · shown to scale</span>' +
           '</div>' +
           (views.length > 1 ? '<div class="pp-under">' +
             '<div class="tabs" role="group" aria-label="View">' + views.map(function (v, k) {
@@ -411,7 +449,7 @@
           '</div>' : '') +
         '</div>' +
         '<div class="pp-text">' +
-          '<span class="mono mute">' + esc(w.no) + ' · ' + esc(w.type) + '</span>' +
+          '<p class="kicker mono mute"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + '</p>' +
           '<h1 class="display">' + esc(w.title) + '</h1>' +
           (w.colorway ? '<p class="by">' + esc(w.colorway) + '</p>' : '') +
           '<p class="about">' + esc(w.about) + '</p>' +
@@ -421,48 +459,95 @@
             '<dt>Paper</dt><dd>' + esc(w.paper) + '</dd>' +
             '<dt>Edition</dt><dd>' + editionText(w) + '</dd>' +
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
-            (formatsOf(w).length > 1 ? '' : '<dt>Price</dt><dd>' + pricesText(w) + '</dd>') +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
           (siblings.length ? '<div class="pp-sibs"><span class="mono mute">Also in this edition</span>' + siblings.map(function (j) {
             var x = WORKS[j];
-            return '<a class="sib" href="' + pageUrl(x) + '"><span class="sib-img"><img src="' + esc(x.image) + '" alt="" loading="lazy"></span>' +
+            return '<a class="sib' + (isSold(x) ? ' is-sold' : '') + '" href="' + pageUrl(x) + '"><span class="sib-img"><img src="' + esc(x.image) + '" alt="" loading="lazy"></span>' +
               '<span><span class="display">' + esc(x.colorway) + '</span><br><span class="mono mute">' + esc(x.no) + '</span></span></a>';
           }).join('') + '</div>' : '') +
         '</div>' +
       '</div>' +
       '<nav class="pp-pager" aria-label="More prints">' +
-        (prev ? '<a href="' + pageUrl(prev) + '"><span class="mono mute">Previous · ' + esc(prev.no) + '</span><span class="display">' + esc(prev.title) + '</span></a>' : '<span></span>') +
-        (next ? '<a class="nx" href="' + pageUrl(next) + '"><span class="mono mute">Next · ' + esc(next.no) + '</span><span class="display">' + esc(next.title) + '</span></a>' : '<span></span>') +
+        (prev ? '<a href="' + pageUrl(prev) + '"><span class="mono mute">Previous · ' + esc(prev.no) + '</span><span class="display">' + titleOf(prev) + '</span></a>' : '<span></span>') +
+        (next ? '<a class="nx" href="' + pageUrl(next) + '"><span class="mono mute">Next · ' + esc(next.no) + '</span><span class="display">' + titleOf(next) + '</span></a>' : '<span></span>') +
       '</nav>';
 
-    // Views
+    // ----- Views -----
+    var stage = root.querySelector('[data-stage]');
     var legendBox = root.querySelector('[data-legend]');
     var stack = root.querySelector('[data-stack]');
     var toggle = root.querySelector('[data-toggle]');
+    var labels = root.querySelectorAll('[data-label]');
+    var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     var open = false;
+
+    // Each label sits level with the middle of its sheet, to the right of the stack.
+    function placeLabels() {
+      if (!stack) return;
+      var box = stack.parentNode.getBoundingClientRect();
+      var right = 0;
+      var rects = Array.prototype.map.call(stack.querySelectorAll('.sheet3d'), function (el) {
+        var r = el.getBoundingClientRect(); right = Math.max(right, r.right); return r;
+      });
+      labels.forEach(function (l) {
+        var r = rects[Number(l.getAttribute('data-label'))];
+        l.style.left = (right - box.left + 20) + 'px';
+        l.style.top = (r.top + r.height / 2 - box.top) + 'px';
+      });
+    }
     function setOpen(o) {
       open = o;
       if (!stack) return;
-      var els = stack.querySelectorAll('.sheet3d'), n = els.length;
       stack.classList.toggle('open', o);
-      els.forEach(function (el, i) {
-        el.style.transform = o ? 'translateY(' + (-(i - (n - 1) / 2) * 20) + '%) rotateX(58deg) rotateZ(-32deg) translateZ(' + (i * 4) + 'px)' : 'none';
-      });
+      stage.classList.toggle('is-open', o);
       toggle.textContent = o ? 'Stack' : 'Separate';
+      setTimeout(placeLabels, still ? 0 : 950);
+    }
+    function focusSheet(k) {
+      if (!stack) return;
+      stack.querySelectorAll('.sheet3d').forEach(function (el) { el.classList.toggle('is-focus', el.style.getPropertyValue('--i') === String(k)); });
+      stack.classList.toggle('has-focus', k != null);
+      labels.forEach(function (l) { l.classList.toggle('is-focus', l.getAttribute('data-label') === String(k)); });
+      if (legendBox) legendBox.querySelectorAll('[data-focus]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-focus') === String(k))); });
+    }
+    function show(v) {
+      root.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-view') === v)); });
+      root.querySelectorAll('.pp-view').forEach(function (x) { x.hidden = x.getAttribute('data-v') !== v; });
+      stage.setAttribute('data-on', v);
+      if (legendBox) legendBox.hidden = v !== 'layers';
+      if (v === 'layers') { setOpen(false); focusSheet(null); setTimeout(function () { setOpen(true); }, still ? 0 : 200); }
     }
     root.querySelectorAll('[data-view]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var v = b.getAttribute('data-view');
-        root.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-        root.querySelectorAll('.pp-view').forEach(function (x) { x.hidden = x.getAttribute('data-v') !== v; });
-        if (legendBox) legendBox.hidden = v !== 'inks';
-        if (v === 'inks') { setOpen(false); setTimeout(function () { setOpen(true); }, 150); }
-      });
+      b.addEventListener('click', function () { show(b.getAttribute('data-view')); });
     });
     if (stack) {
       stack.addEventListener('click', function () { setOpen(!open); });
       toggle.addEventListener('click', function () { setOpen(!open); });
+      legendBox.querySelectorAll('[data-focus]').forEach(function (b) {
+        var k = Number(b.getAttribute('data-focus'));
+        b.addEventListener('mouseenter', function () { if (open) focusSheet(k); });
+        b.addEventListener('mouseleave', function () { if (b.getAttribute('aria-pressed') !== 'true' || !b.matches(':focus')) focusSheet(null); });
+        b.addEventListener('click', function () {
+          if (!open) setOpen(true);
+          focusSheet(b.getAttribute('aria-pressed') === 'true' && stack.classList.contains('has-focus') ? null : k);
+        });
+      });
+      // A gentle turn of the stack as the pointer moves across the mat.
+      if (!still && window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        var view = stack.parentNode;
+        view.addEventListener('pointermove', function (e) {
+          if (!open) return;
+          var r = view.getBoundingClientRect();
+          var dx = (e.clientX - r.left) / r.width - .5, dy = (e.clientY - r.top) / r.height - .5;
+          stack.style.setProperty('--rz', (-34 + dx * 10).toFixed(2) + 'deg');
+          stack.style.setProperty('--rx', (56 - dy * 8).toFixed(2) + 'deg');
+        });
+        view.addEventListener('pointerleave', function () {
+          stack.style.removeProperty('--rz'); stack.style.removeProperty('--rx');
+        });
+      }
+      window.addEventListener('resize', placeLabels);
     }
   }
 
