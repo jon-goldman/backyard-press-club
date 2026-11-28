@@ -379,7 +379,7 @@
     if (w.photo) views.push({ key: 'photo', label: 'Photo' });
     if (hasLayers) views.push({ key: 'layers', label: 'Layers' }, { key: 'byink', label: 'Ink by ink' });
 
-    var siblings = WORKS.map(function (x, j) { return j; }).filter(function (j) { return j !== idx && WORKS[j].title === w.title && WORKS[j].colorway; });
+    var ways = WORKS.map(function (x, j) { return j; }).filter(function (j) { return WORKS[j].title === w.title && WORKS[j].colorway; });
     var prev = WORKS[idx - 1], next = WORKS[idx + 1];
 
     var buy = buyButtons(w, sold, 'This edition is gone. It stays here as part of the record.');
@@ -410,8 +410,8 @@
               : '<span class="sheet3d paper" style="--i:' + k + ';background:' + PAPER_TONE + '"></span>';
           }).join('') +
         '</button>' +
-        '<ol class="s3-labels" aria-hidden="true">' + sheets.map(function (s, k) {
-          return '<li data-label="' + k + '"><span class="mono mute">' + esc(s.sub) + '</span> ' + esc(s.name) + '</li>';
+        '<ol class="s3-labels">' + sheets.map(function (s, k) {
+          return '<li data-label="' + k + '"><button type="button" data-focus="' + k + '"><span class="mono mute">' + esc(s.sub) + '</span> ' + esc(s.name) + '</button></li>';
         }).reverse().join('') + '</ol>';
       legend = '<div class="pp-legend" data-legend hidden>' +
         sheets.map(function (s, k) {
@@ -431,7 +431,7 @@
       '</div>';
     }
 
-    function titleOf(x) { return esc(x.title) + (x.colorway ? '<span class="mute">, ' + esc(x.colorway) + '</span>' : ''); }
+    function titleOf(x) { return x.colorway ? '<span class="t">' + esc(x.title) + ', </span><span class="mute">' + esc(x.colorway) + '</span>' : esc(x.title); }
 
     root.innerHTML =
       '<div class="pp">' +
@@ -453,7 +453,11 @@
         '<div class="pp-text">' +
           '<p class="kicker mono mute"><a href="catalogue.html">Catalogue</a><span aria-hidden="true"> / </span><span aria-current="page">' + esc(w.no) + '</span> · ' + esc(w.type) + '</p>' +
           '<h1 class="display">' + esc(w.title) + '</h1>' +
-          (w.colorway ? '<p class="by">' + esc(w.colorway) + '</p>' : '') +
+          (w.colorway ? '<div class="ways"><p class="by">' + esc(w.colorway) + '</p>' + (ways.length > 1 ? '<nav class="way-list" aria-label="Colourways">' + ways.map(function (j) {
+            var x = WORKS[j];
+            return '<a class="way' + (isSold(x) ? ' is-sold' : '') + '" href="' + pageUrl(x) + '"' + (j === idx ? ' aria-current="page"' : '') + ' title="' + esc(x.colorway) + '" aria-label="' + esc(x.colorway) + '">' +
+              x.inks.map(function (n) { return '<i style="background:' + hex(n) + '"></i>'; }).join('') + '</a>';
+          }).join('') + '</nav>' : '') + '</div>' : '') +
           '<p class="about">' + esc(w.about) + '</p>' +
           '<dl class="facts">' +
             '<dt>Inks</dt><dd class="inklist">' + inkList + '</dd>' +
@@ -463,11 +467,6 @@
             '<dt>Year</dt><dd>' + esc(w.year) + '</dd>' +
           '</dl>' +
           '<div class="pp-buy">' + buy + '</div>' +
-          (siblings.length ? '<div class="pp-sibs"><span class="mono mute">Also in this edition</span>' + siblings.map(function (j) {
-            var x = WORKS[j];
-            return '<a class="sib' + (isSold(x) ? ' is-sold' : '') + '" href="' + pageUrl(x) + '"><span class="sib-img"><img src="' + esc(x.image) + '" alt="" loading="lazy"></span>' +
-              '<span><span class="display">' + esc(x.colorway) + '</span><br><span class="mono mute">' + esc(x.no) + '</span></span></a>';
-          }).join('') + '</div>' : '') +
         '</div>' +
       '</div>' +
       '<nav class="pp-pager" aria-label="More prints">' +
@@ -511,7 +510,7 @@
       stack.querySelectorAll('.sheet3d').forEach(function (el) { el.classList.toggle('is-focus', el.style.getPropertyValue('--i') === String(k)); });
       stack.classList.toggle('has-focus', k != null);
       labels.forEach(function (l) { l.classList.toggle('is-focus', l.getAttribute('data-label') === String(k)); });
-      if (legendBox) legendBox.querySelectorAll('[data-focus]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-focus') === String(k))); });
+      root.querySelectorAll('[data-focus]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-focus') === String(k))); });
     }
     function show(v) {
       root.querySelectorAll('[data-view]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-view') === v)); });
@@ -526,7 +525,7 @@
     if (stack) {
       stack.addEventListener('click', function () { setOpen(!open); });
       toggle.addEventListener('click', function () { setOpen(!open); });
-      legendBox.querySelectorAll('[data-focus]').forEach(function (b) {
+      root.querySelectorAll('[data-focus]').forEach(function (b) {
         var k = Number(b.getAttribute('data-focus'));
         b.addEventListener('mouseenter', function () { if (open) focusSheet(k); });
         b.addEventListener('mouseleave', function () { if (b.getAttribute('aria-pressed') !== 'true' || !b.matches(':focus')) focusSheet(null); });
