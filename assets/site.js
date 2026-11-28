@@ -553,6 +553,14 @@
       }
       window.addEventListener('resize', placeLabels);
     }
+
+    // Left and right arrow keys step to the previous or next print (not while typing or choosing a format).
+    document.addEventListener('keydown', function (e) {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.target.closest && e.target.closest('input, textarea, select, [contenteditable]')) return;
+      var to = e.key === 'ArrowLeft' ? prev : e.key === 'ArrowRight' ? next : null;
+      if (to) location.href = pageUrl(to);
+    });
   }
 
   /* ---------- Email signup (free Kit form; id in works.js) ---------- */
