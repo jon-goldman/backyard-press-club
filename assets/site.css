@@ -344,72 +344,116 @@ dialog.quick::backdrop { background: rgba(17,17,17,.32); }
 }
 .work:hover .display, .work:focus-visible .display { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
-/* One print's page (print.html) */
-.print-page { padding-top: 28px; }
-.crumbs { margin: 0 0 24px; }
-.crumbs a { color: var(--mute); }
-.pp { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 56px; align-items: start; }
-.pp-stage { background: var(--mat); height: min(74vh, 780px); min-height: 480px; position: relative; }
-/* Design polish (Nov 28, Jon: stay focused on the design): smaller pieces sit smaller on the mat, as on the shop. */
-.pp-view[data-v="print"] .pp-img img { max-width: calc(100% * (.45 + .55 * var(--s, 1))); max-height: calc(100% * (.45 + .55 * var(--s, 1))); }
-.pp-view { position: absolute; inset: 48px; display: flex; align-items: center; justify-content: center; }
+/* One print's page (print.html). Print pages round 1 (Nov 28). */
+.print-page { padding-top: 40px; }
+main.print-page { padding-bottom: 72px; }
+.pp { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 64px; align-items: start; }
+.pp-stage { background: var(--mat); height: min(76vh, 800px); min-height: 500px; position: relative; overflow: hidden; }
+.pp-view { position: absolute; inset: 56px 56px 64px; display: flex; align-items: center; justify-content: center; }
 .pp-view[hidden] { display: none; }
 .pp-img { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
 .pp-img img {
   max-width: 100%; max-height: 100%; width: auto; height: auto;
   box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 18px 30px -20px rgba(17,17,17,.45);
 }
-/* Layers: paper and inks pulled apart in 3D (after the Drums view in Riso Studio) */
+/* Shown at true relative size: an 11 × 17 in sheet fills the mat, a postcard sits small. */
+.pp-view[data-v="print"] .pp-img img { max-width: calc(100% * var(--fill, 1)); max-height: calc(100% * var(--fill, 1)); }
+.pp-scale { position: absolute; left: 20px; bottom: 16px; font-size: 11px; transition: opacity .3s; }
+.pp-stage:not([data-on="print"]) .pp-scale { opacity: 0; }
+
+/* Layers: paper and inks pulled apart in 3D (after the Drums view in Riso Studio).
+   Every sheet turns the same way and moves out along its own normal, so the gaps stay even. */
 .stack3d {
-  position: relative; display: block; height: 62%; aspect-ratio: 2 / 3; max-width: 46%;
-  padding: 0; border: 0; background: none; cursor: pointer;
-  perspective: 1400px; transform-style: preserve-3d;
+  --rx: 56deg; --rz: -34deg; --gap: 84px;
+  position: relative; display: block; height: 62%; aspect-ratio: 2 / 3; max-width: 42%;
+  padding: 0; border: 0; background: none; cursor: pointer; perspective: 1600px;
+  transition: transform .9s cubic-bezier(.2,.8,.2,1);
 }
 .sheet3d {
   position: absolute; inset: 0; width: 100%; height: 100%; display: block;
-  transform-origin: 50% 50%; transition: transform .9s cubic-bezier(.2,.8,.2,1), box-shadow .6s;
+  transform-origin: 50% 50%;
+  transition: transform .9s cubic-bezier(.2,.8,.2,1), box-shadow .6s, opacity .4s, background-color .6s;
   box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 18px 30px -20px rgba(17,17,17,.45);
 }
 .sheet3d.ink { mix-blend-mode: multiply; box-shadow: none; }
-.stack3d.open .sheet3d { box-shadow: 0 0 0 1px rgba(17,17,17,.10), 0 14px 26px -16px rgba(17,17,17,.30); }
-.stack3d.open .sheet3d.ink { mix-blend-mode: normal; background: rgba(255,255,255,.22); }
+.stack3d.open { transform: translateX(-30%); }
+.stack3d.open .sheet3d {
+  transform: rotateX(var(--rx)) rotateZ(var(--rz)) translateZ(calc((var(--i) - (var(--n) - 1) / 2) * var(--gap)));
+  transition-delay: calc(var(--i) * 70ms);
+  box-shadow: 0 0 0 .5px rgba(17,17,17,.14), 0 24px 30px -22px rgba(17,17,17,.38);
+}
+/* Apart, each ink is a clear sheet: the colour floats, the film just catches the light. */
+.stack3d.open .sheet3d.ink { mix-blend-mode: normal; background-color: rgba(255,255,255,.28); }
+.stack3d.has-focus .sheet3d:not(.is-focus) { opacity: .22; }
+.stack3d.has-focus .sheet3d.is-focus { background-color: rgba(255,255,255,.7); transition-delay: 0s; }
+.s3-labels { list-style: none; margin: 0; padding: 0; }
+.s3-labels li {
+  position: absolute; transform: translateY(-50%); font-size: 14px; white-space: nowrap;
+  display: flex; align-items: baseline; gap: 10px; opacity: 0; transition: opacity .4s, color .3s;
+}
+.s3-labels li::before { content: ""; width: 24px; height: 1px; background: var(--rule); align-self: center; }
+.pp-stage.is-open .s3-labels li { opacity: 1; }
+.pp-stage.is-open .stack3d.has-focus ~ .s3-labels li:not(.is-focus) { opacity: .3; }
 .pp-under { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
-.pp-legend { display: flex; flex-wrap: wrap; gap: 6px 20px; align-items: center; border-top: 1px solid var(--rule); padding-top: 12px; font-size: 14px; }
+.pp-legend { display: flex; flex-wrap: wrap; gap: 0 20px; align-items: center; border-top: 1px solid var(--rule); padding-top: 4px; font-size: 14px; }
 .pp-legend[hidden] { display: none; }
-.pp-legend > span { display: inline-flex; align-items: center; gap: 8px; }
+.pp-legend .lg { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0; background: none; border: 0; border-bottom: 1px solid transparent; cursor: pointer; }
+.pp-legend .lg[aria-pressed="true"] { border-bottom-color: var(--ink); }
 .pp-legend i { width: 10px; height: 10px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px rgba(17,17,17,.12); }
 .pp-toggle { margin-left: auto; min-height: 44px; padding: 0 2px; background: none; border: 0; border-bottom: 1px solid var(--ink); font-size: 14px; cursor: pointer; }
-@media (prefers-reduced-motion: reduce) { .sheet3d { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .sheet3d, .stack3d { transition: none; } }
+
+/* Ink by ink: each separation flat, then the print. */
+.byink { width: 100%; display: grid; grid-template-columns: var(--cols); justify-content: center; align-items: center; gap: 0 16px; }
+.byink figure { max-width: 180px; justify-self: center; width: 100%; }
+.byink figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.bi-sheet { display: block; width: 100%; box-shadow: 0 1px 0 rgba(17,17,17,.08), 0 14px 22px -16px rgba(17,17,17,.45); }
+.bi-sheet img { width: 100%; height: auto; }
+.byink figcaption { font-size: 13px; }
+.byink .op { font-size: 18px; color: var(--mute); padding-bottom: 28px; }
+
+/* Text column */
 .pp-text { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.pp-text .kicker { margin: 0 0 -4px; }
+.pp-text .kicker a { color: var(--mute); }
+.pp-text .kicker a:hover { color: var(--ink); }
+.pp-text .kicker [aria-current] { color: var(--ink); }
 .pp-text h1 { margin: 0; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.04; }
-.pp-text .by { margin: 0; font-size: 17px; line-height: 1.45; }
-.pp-text .about { margin: 0; font-size: 15px; line-height: 1.6; color: #333; }
+.pp-text .by { margin: -8px 0 0; font-size: 17px; line-height: 1.45; color: var(--mute); }
+.pp-text .about { margin: 0; font-size: 15px; line-height: 1.6; color: #333; max-width: 46ch; }
 .pp-text .facts { border-top: 1px solid var(--rule); padding-top: 16px; grid-template-columns: 88px minmax(0, 1fr); font-size: 14px; }
 .inklist { display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .inklist .ink { display: inline-flex; align-items: center; gap: 6px; }
 .inklist .ink i { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.pp-buy { display: flex; flex-direction: column; gap: 10px; }
+.pp-buy { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--rule); padding-top: 16px; }
 .pp-buy .mono { text-wrap: pretty; }
-main.print-page { padding-bottom: 72px; }
 .pp-sibs { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--rule); padding-top: 16px; }
 .sib { display: flex; align-items: center; gap: 14px; }
 .sib-img { width: 56px; height: 70px; background: var(--mat); display: flex; align-items: center; justify-content: center; flex: none; }
 .sib-img img { max-width: 70%; max-height: 80%; }
 .sib .display { font-size: 15px; transition: color .3s; }
 .sib:hover .display { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.pp-pager { display: flex; justify-content: space-between; gap: 24px; margin-top: 56px; border-top: 1px solid var(--ink); padding-top: 18px; }
+.pp-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 72px; border-top: 1px solid var(--ink); padding-top: 18px; }
 .pp-pager a { display: flex; flex-direction: column; gap: 4px; }
 .pp-pager a.nx { text-align: right; }
 .pp-pager .display { font-size: 18px; transition: color .3s; }
 .pp-pager a:hover .display { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.pp-pager .mono { white-space: nowrap; }
 .ql .buy .more { color: var(--ink); font-size: 14px; }
 @media (max-width: 960px) {
   .pp { grid-template-columns: 1fr; gap: 32px; }
   .pp-stage { height: auto; min-height: 0; aspect-ratio: 4 / 5; }
-  .pp-view { inset: 24px; }
+  .pp-view { inset: 28px 24px 40px; }
   .pp-text { position: static; }
+  .stack3d { --gap: 40px; height: 74%; max-width: 60%; }
+  .stack3d.open { transform: none; }
+  .s3-labels { display: none; }
+  .byink { gap: 0 8px; }
+  .byink figcaption { font-size: 12px; }
+  .pp-scale { left: 14px; bottom: 10px; }
+  .pp-pager .display { font-size: 16px; }
+  .pp-pager .display .mute { display: none; }
 }
-.pp-pager .mono { white-space: nowrap; }
 
 /* Availability (Nov 2026): sold-out works fade back but keep their place. */
 .plate.is-sold img, .work.is-sold img, .sib.is-sold img { opacity: .5; }
